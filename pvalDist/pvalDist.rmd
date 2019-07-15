@@ -1,0 +1,186 @@
+---
+title: "Report Draft On Revenue Simulation Pipe"
+output:
+  pdf_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Artificial Data
+
+I've created artificai datasample to demonstrate pipeline of simulation.
+Let's take a glimpse on data:
+
+```{r cars}
+x <- data.frame(case = c("case1", "case2", "case3", "case4", "case5", "case6", "case7"),
+                prob = c(0.85, 0.2345, 0.0555, 0.001, 0.35, 0.16, 0.68),
+                revenue = c(15000, 10000, 5000, 5000, 7000, 2000, 3000),
+                stringsAsFactors = FALSE)
+x
+```
+
+## Vector Length for Probability Deviations
+
+In order to fit binomial model suceess-failure condition we need to set length for binary vector.
+next, using each p value we need to simulate it's deviations due to simple random chance.
+To do so we need binary vectors (1,0) with given success probability for each case.
+
+
+
+
+```{r prob}
+# Vector of All Examining Probabilities
+p <- x$prob
+print(p)
+```
+
+```{r tail}
+# Minimum Length (for 10 Success-Failures binomial condition) ----
+min.tail <- min(p, 1 - p) # min value of all range of both heads and tails
+print(min.tail)
+```
+
+Proportion for length size (x to be at least 10):
+
+```{r len}
+min.len  <- ceiling(10 / min.tail) # min length to get 10 binom successes
+min.len
+```
+
+
+
+## Probability deviation Simulate
+Function to simulate prob deviation value upon binomial vector with given success probability:
+
+```{r}
+# mean proportion of binomial distribution upon single success P and given len
+pDeviate1 <- function(p., len = min.len) {
+        
+        stopifnot(length(p.) == 1L)
+        
+        smp <- sample(x       = c(0, 1),
+                      size    = len,
+                      replace = TRUE,
+                      prob    = c(1 - p., p.))
+        return(mean(smp))
+}
+```
+
+Running it x5 times as a demo:
+```{r}
+set.seed(1)
+pDeviate1(p. = 0.3)
+pDeviate1(p. = 0.3)
+pDeviate1(p. = 0.3)
+pDeviate1(p. = 0.3)
+pDeviate1(p. = 0.3)
+```
+
+## P's Deviation Distributions
+
+Function to create deviation distribution of given length for each p
+```{r}
+# list of binomial means for given P vector - p distibutions of given length
+pMeanDist <- function(pvec, len = 10000) {
+        
+        distrs <- lapply(seq(length(pvec)), function(n) {
+                p <- pvec[n] # single nth probability value (vectorised)
+                prop.dist <- replicate(len, pDeviate1(p. = p))
+                return(prop.dist)
+        })
+        
+        stopifnot(length(distrs) == length(pvec))
+        names(distrs) <- pvec
+        return(distrs)
+}
+```
+
+```{r}
+pmeandist <- pMeanDist(pvec = x$prob, len = 10000)
+str(pmeandist)
+
+```
+
+Let's see what Histogram of deviations for p = 85% (0.85) looks like:
+
+```{r}
+hist(pmeandist[[1]])
+```
+
+## Binomial
+
+Function for simulating binary outcomes (1,0 - "Bernulli trials") with given p
+upon list of given p distributions:
+
+```{r}
+# VECTOR OF SIMULATED BINARY OUTCOMES UPON SINGLE RANDOM SUCCESS PROBABILITY
+# FROM EACH DISTRIBUTION OF PROBABILITIES 
+binarySim <- function(distr.p) {
+        
+        # take by 1 random value from each distribution (for each probability)
+        rand.each1 <- vapply(distr.p, function(x) sample(x, 1), numeric(1))
+        
+        # 1 sample from each dist as "success probability" for binary simulation
+        bin.sim <- vapply(rand.each1, function(b) {
+                sample(x       = c(0, 1),
+                       size    = 1,
+                       replace = TRUE,
+                       prob    = c(1 - b, b))
+                }, 
+                numeric(1))
+        
+        stopifnot(length(distr.p) == length(bin.sim))
+        return(bin.sim)
+}
+
+```
+
+Let'shave a look on it's output running it x10:
+```{r}
+set.seed(2)
+replicate(10, binarySim(pmeandist))
+```
+
+## Revnues Distribution
+
+Finaly we add everything up to simulate revenue distributaion upon p's & values:
+
+```{r}
+# SIMULATED TOTAL REVENUE DISTRIBUTION
+pvalDist <- function(pvec, valvec = x$reve, rep = 10000) {
+        
+        pmeandist <- pMeanDist(pvec = pvec)
+        stopifnot(length(pmeandist) == length(valvec))
+        
+        rsim <- replicate(rep, {
+                # Apply each binary outcome to related revenue
+                rev <- sum(valvec * binarySim(pmeandist))
+                return(rev)
+        })
+        
+        stopifnot(length(rsim) == rep)
+        return(rsim)
+}
+
+```
+
+```{r}
+set.seed(1)
+simdist <- pvalDist(pvec = x$prob, valvec = x$reve, rep = 100000)
+```
+
+Output:
+```{r}
+str(simdist)
+```
+
+Output Histogram
+```{r}
+hist(simdist)
+```
+
+
+
+
