@@ -315,7 +315,7 @@ ggplot(data = as.data.table(simdist)) +
             vjust = -0.4, hjust = -0.05, col = 'white', size = 5)
 ```
 
-Mathematical Expectation of Example Dataset is exactly around mean!:
+Mathematical Expectation of Example Dataset is exactly around simulated mean!:
 ```{r}
 sum(src$reve * src$p)
 ```
