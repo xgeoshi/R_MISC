@@ -2,6 +2,7 @@
 title: "Report Draft On Revenue Simulation Pipe"
 output:
   pdf_document: default
+  toc: true
 ---
 
 ```{r setup, include=FALSE}

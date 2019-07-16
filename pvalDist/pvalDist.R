@@ -68,7 +68,7 @@ binarySim <- function(distr.p) {
 pvalDist <- function(pvec, valvec = x$reve, rep = 10000) {
         
         pmeandist <- pMeanDist(pvec = pvec)
-        stopifnot(length(pmeandist) == length(valvec))
+        stopifnot(identical(length(pmeandist), length(valvec), length(pvec)))
         
         rsim <- replicate(rep, {
                 # Apply each binary outcome to related revenue
