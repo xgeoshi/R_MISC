@@ -1,7 +1,7 @@
 # SAMPLE DATA
-x <- data.frame(case = c("case1", "case2", "case3", "case4", "case5", "case6", "case7"),
-                prob = c(0.85, 0.2345, 0.0555, 0.001, 0.35, 0.16, 0.68),
-                reve = c(15000, 10000, 5000, 5000, 7000, 2000, 3000),
+x <- data.frame(case = c("case1", "case2", "case3", "case4", "case5", "case6", "case7", "case8", "case9"),
+                prob = c(0.85, 0.2345, 0.0555, 0.001, 0.35, 0.16, 0.68, 0.4, 0.12),
+                reve = c(15000, 10000, 5000, 5000, 7000, 2000, 3000, 4000, 1000),
                 stringsAsFactors = FALSE)
 
 
@@ -13,25 +13,31 @@ p <- x$prob
 min.tail <- min(p, 1 - p) # min value of all range of both heads and tails
 min.len  <- ceiling(10 / min.tail) # min length to get 10 binom successes
 
+
+bernulliTrial <- function(success_p, length) {
+        sample(x       = c(0, 1),
+               size    = length,
+               replace = TRUE,
+               prob    = c(1 - success_p, success_p))
+        
+}
+
+# trial1 <- bernulliTrial(success_p = 0.30, length = 25)
+
 # mean proportion of binomial distribution upon single success P and given len
-pDeviate1 <- function(p., len = min.len) {
-        
+
+bernulliMean <- function(p., length) {
         stopifnot(length(p.) == 1L)
-        
-        smp <- sample(x       = c(0, 1),
-                      size    = len,
-                      replace = TRUE,
-                      prob    = c(1 - p., p.))
-        return(mean(smp))
+        mean(bernulliTrial(success_p = p., length = length))
 }
 
 
 # list of binomial means for given P vector - p distibutions of given length
-pMeanDist <- function(pvec, len = 10000) {
+pMeanDist <- function(pvec, rep = 10000, bern_len = min.len) {
         
         distrs <- lapply(seq(length(pvec)), function(n) {
                 p <- pvec[n] # single nth probability value (vectorised)
-                prop.dist <- replicate(len, pDeviate1(p. = p))
+                prop.dist <- replicate(rep, bernulliMean(p. = p, length = bern_len))
                 return(prop.dist)
         })
         
@@ -41,6 +47,22 @@ pMeanDist <- function(pvec, len = 10000) {
 }
 
 # names(pdists) <- x$prob # 
+
+require(gridExtra)
+require(ggplot2)
+require(data.table)
+require(forcats)
+plot.data <- list()
+
+for (r in seq(length(pmeandist))) {
+        plot.data[[r]] <- data.table(p = pmeandist[[r]], cat = names(pmeandist[r]))
+}
+
+# plotbind <- rbindlist(plot.data)
+
+ggplot(data = rbindlist(plot.data), aes(x = p)) +
+        geom_histogram() +
+        facet_wrap(~ as_factor(cat), scales = "free_x")
 
 
 # VECTOR OF SIMULATED BINARY OUTCOMES UPON SINGLE RANDOM SUCCESS PROBABILITY
