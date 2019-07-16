@@ -1,94 +1,191 @@
 ---
-title: "Report Draft On Revenue Simulation Pipe"
+title: "Simulation of Revenue Distribution in R language. Process Reveal."
 output:
-  pdf_document: default
-  toc: true
+  pdf_document:
+    toc: true
+    df_print: kable
+    # toc_depth: 1
+    # number_sections: true
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## Artificial Data
+&nbsp;
 
-I've created artificai datasample to demonstrate pipeline of simulation.
-Let's take a glimpse on data:
+## Randomly Generated Data Source as an Example.
 
-```{r cars}
-x <- data.frame(case = c("case1", "case2", "case3", "case4", "case5", "case6", "case7"),
-                prob = c(0.85, 0.2345, 0.0555, 0.001, 0.35, 0.16, 0.68),
-                revenue = c(15000, 10000, 5000, 5000, 7000, 2000, 3000),
-                stringsAsFactors = FALSE)
-x
+```{r, source, cache=FALSE, echo=FALSE, message=FALSE}
+require(data.table)
+src <- data.frame(
+  case = c("case1", "case2", "case3", "case4", "case5", "case6", "case7", "case8", "case9"),
+  prob = c(0.85, 0.2345, 0.0555, 0.001, 0.35, 0.16, 0.68, 0.4, 0.12),
+  reve = c(15000, 10000, 5000, 5000, 7000, 2000, 3000, 4000, 1000),
+  stringsAsFactors = FALSE)
+src <- as.data.table(src)
 ```
 
-## Vector Length for Probability Deviations
+Simulated data source have size of `r ncol(src)` columns & `r nrow(src)` rows.
 
-In order to fit binomial model suceess-failure condition we need to set length for binary vector.
-next, using each p value we need to simulate it's deviations due to simple random chance.
-To do so we need binary vectors (1,0) with given success probability for each case.
+`r ncol(src)` columns:  
 
+* `case id` - case id number
+* `prob` - success probability of e.g. Opportunity
+* `revenue` - revenue amount per Opportunity  
 
+`r nrow(src)` rows:  
 
+* `r nrow(src)` cases  
 
-```{r prob}
-# Vector of All Examining Probabilities
-p <- x$prob
-print(p)
+&nbsp;
+
+View on Source content:
+
+```{r, printsrc, echo=FALSE}
+src
 ```
+
+Code used to create source (mentioned above):
+```{r, srccode}
+src <- data.frame(
+  case = c("case1", "case2", "case3", "case4", "case5", "case6", "case7", "case8", "case9"),
+  prob = c(0.85, 0.2345, 0.0555, 0.001, 0.35, 0.16, 0.68, 0.4, 0.12),
+  reve = c(15000, 10000, 5000, 5000, 7000, 2000, 3000, 4000, 1000),
+  stringsAsFactors = FALSE)
+p <- src$prob
+```
+
+\newpage
+
+
+
+# Pipeline
+
+In order to create revenue distribution (simulations) it's required to proceed with the following steps:  
+
+a) Generate Probability Deviation Distribution for each of 7 case's probability values
+b) Simulate binary outcome per case (success-failure) based on randomly chosen single prob value per distribution
+c) Substitute success outcomes with related case's revenue
+d) Sum success case values = Total Revenue (Simulated)
+e) Repeat many times = Simulated Revenue Distribution
+
+&nbsp;
+
+## Generate Probability Deviation Distribution
+
+Probability Deviation Distributions computed as a vector of certain length of
+zeroes and ones (`"Bernulli trials"`) with given probability of success.
+Example of how vector, say length = 25 with given 30% probability of success
+would look like. Code & output:  
+
+```{r}
+set.seed(11)
+bernulliTrial <- function(success_p, length) {
+        sample(x       = c(0, 1),
+               size    = length,
+               replace = TRUE,
+               prob    = c(1 - success_p, success_p))
+        
+}
+
+bernulli_trial_1 <- bernulliTrial(success_p = 0.30, length = 25)
+print(bernulli_trial_1)
+
+```
+
+  
+&nbsp;
+
+  
+Mean Value of This Vector is what we can call a Simulation of Random Deviation (from 30% prob):
+```{r}
+mean(bernulli_trial_1)
+```
+
+&nbsp;
+
+
+If we run same function again we would get slightly different result since function is randomized over mean:
+```{r, echo=FALSE}
+set.seed(13)
+```
+```{r}
+bernulli_trial_2 <- bernulliTrial(success_p = 0.30, length = 25)
+print(bernulli_trial_2)
+```
+
+&nbsp;
+
+```{r}
+mean(bernulli_trial_2)
+```
+
+&nbsp;
+
+Repeating this process = 10K times will be sufficient for our purposes.
+
+But before proceed we need to make sure length of the bernulli vector is enough
+to meet 10 > success-failure binomial model conditions required for normal
+distribution.
+
+Check sufficiency for length 25 given 30% probability success as follows:
+```{r}
+t(c("25*0.3" = 0.3 * 25, "25*0.7" = (1 - 0.3) * 25))
+```
+
+7.5 is less then 10 necessary success so we need to set longer vector using equation:
+
+```{r}
+print(length_for_30p <- 10 / min(c(1 - 0.3, 0.3)))
+```
+
+&nbsp;
+
+Let's check the sufficiency of the new vetor length > 10 success condition:
+```{r}
+t(c("0.3" = length_for_30p * 0.3, "0.7" = length_for_30p * (1 - 0.3)))
+```
+
+&nbsp;
+
+Since we need to put all cases in the similar condition while simulation, we have
+to take the longest suitable vector among all cases and apply it for every case:
 
 ```{r tail}
 # Minimum Length (for 10 Success-Failures binomial condition) ----
-min.tail <- min(p, 1 - p) # min value of all range of both heads and tails
-print(min.tail)
+print(min.tail <- min(p, 1 - p)) # min value of all range of both heads and tails
 ```
+
+&nbsp;
 
 Proportion for length size (x to be at least 10):
-
 ```{r len}
-min.len  <- ceiling(10 / min.tail) # min length to get 10 binom successes
-min.len
+print(min.len  <- ceiling(10 / min.tail)) # min length to get 10 binom successes
 ```
 
+&nbsp;
 
+Minimum length of the vector is set as a function argument to compute 10K mean
+bernulli means per each case of source data.
 
-## Probability deviation Simulate
-Function to simulate prob deviation value upon binomial vector with given success probability:
+Code:
 
 ```{r}
 # mean proportion of binomial distribution upon single success P and given len
-pDeviate1 <- function(p., len = min.len) {
-        
+bernulliMean <- function(p., length) {
         stopifnot(length(p.) == 1L)
-        
-        smp <- sample(x       = c(0, 1),
-                      size    = len,
-                      replace = TRUE,
-                      prob    = c(1 - p., p.))
-        return(mean(smp))
+        mean(bernulliTrial(success_p = p., length = length))
 }
-```
 
-Running it x5 times as a demo:
-```{r}
-set.seed(1)
-pDeviate1(p. = 0.3)
-pDeviate1(p. = 0.3)
-pDeviate1(p. = 0.3)
-pDeviate1(p. = 0.3)
-pDeviate1(p. = 0.3)
-```
 
-## P's Deviation Distributions
-
-Function to create deviation distribution of given length for each p
-```{r}
+# Function to create deviation distribution of given length for each p
 # list of binomial means for given P vector - p distibutions of given length
-pMeanDist <- function(pvec, len = 10000) {
+pMeanDist <- function(pvec, rep = 10000, bern_len = min.len) {
         
         distrs <- lapply(seq(length(pvec)), function(n) {
                 p <- pvec[n] # single nth probability value (vectorised)
-                prop.dist <- replicate(len, pDeviate1(p. = p))
+                prop.dist <- replicate(rep, bernulliMean(p. = p, length = bern_len))
                 return(prop.dist)
         })
         
@@ -96,24 +193,44 @@ pMeanDist <- function(pvec, len = 10000) {
         names(distrs) <- pvec
         return(distrs)
 }
+
 ```
 
-```{r}
-pmeandist <- pMeanDist(pvec = x$prob, len = 10000)
+&nbsp;
+
+Deviations Distributions:
+```{r, cache=FALSE}
+pmeandist <- pMeanDist(pvec = src$prob, rep = 10000,  bern_len = min.len)
 str(pmeandist)
 
 ```
 
-Let's see what Histogram of deviations for p = 85% (0.85) looks like:
+&nbsp;
 
-```{r}
-hist(pmeandist[[1]])
+Let's Plot histograms of Probability Deviations for every case:
+
+```{r, message=FALSE, warning=FALSE, echo=FALSE, cache=TRUE}
+require(ggplot2)
+require(data.table)
+require(forcats)
+plot.data <- list()
+
+for (r in seq(length(pmeandist))) {
+        plot.data[[r]] <- data.table(p = pmeandist[[r]], cat = names(pmeandist[r]))
+}
+
+ggplot(data = rbindlist(plot.data), aes(x = p)) +
+        geom_histogram() +
+        facet_wrap(~ as_factor(cat), scales = "free_x")
 ```
 
-## Binomial
+\newpage
 
-Function for simulating binary outcomes (1,0 - "Bernulli trials") with given p
-upon list of given p distributions:
+## Simulate binary outcome per case (success-failure)
+
+Now we need to simulate binary oucomes upon simulated probabilities distrbutions
+for every case x 10000 times.
+Code:
 
 ```{r}
 # VECTOR OF SIMULATED BINARY OUTCOMES UPON SINGLE RANDOM SUCCESS PROBABILITY
@@ -138,19 +255,27 @@ binarySim <- function(distr.p) {
 
 ```
 
-Let'shave a look on it's output running it x10:
-```{r}
+&nbsp;
+
+Example of outcome after repeated running for x10 times:
+
+```{r, cache=TRUE}
 set.seed(2)
 replicate(10, binarySim(pmeandist))
 ```
 
 ## Revnues Distribution
 
-Finaly we add everything up to simulate revenue distributaion upon p's & values:
+Finaly we add everything up.
+We use 10000 simulated binary outcomes per each case, combine it with 
+related Opportunity ID revenue and sum all values to have simulation of Total Revnue.
+And Repeat x10K Times.
+
+Code:
 
 ```{r}
 # SIMULATED TOTAL REVENUE DISTRIBUTION
-pvalDist <- function(pvec, valvec = x$reve, rep = 10000) {
+pvalDist <- function(pvec, valvec, rep = 10000) {
         
         pmeandist <- pMeanDist(pvec = pvec)
         stopifnot(length(pmeandist) == length(valvec))
@@ -167,19 +292,32 @@ pvalDist <- function(pvec, valvec = x$reve, rep = 10000) {
 
 ```
 
-```{r}
+```{r, cache=TRUE}
 set.seed(1)
-simdist <- pvalDist(pvec = x$prob, valvec = x$reve, rep = 100000)
+simdist <- pvalDist(pvec = src$prob, valvec = src$reve, rep = 1000000)
 ```
 
-Output:
+Output head:
 ```{r}
 str(simdist)
 ```
 
-Output Histogram
+Total Revenue Distribution Simulation Histogram:
+
+```{r, message=FALSE, echo=FALSE}
+require(ggplot2)
+ggplot(data = as.data.table(simdist)) +
+  geom_histogram(aes(x = simdist, y = ..density..)) +
+  scale_x_continuous("revenue", labels = scales::dollar_format()) +
+  scale_y_continuous("density") +
+  geom_vline(aes(xintercept = mean(simdist)), col = 'black', size = 1) +
+  geom_text(aes(label = paste0("mean: ", mean(simdist)), y = 0, x = mean(simdist)),
+            vjust = -0.4, hjust = -0.05, col = 'white', size = 5)
+```
+
+Mathematical Expectation of Example Dataset is exactly around mean!:
 ```{r}
-hist(simdist)
+sum(src$reve * src$p)
 ```
 
 
