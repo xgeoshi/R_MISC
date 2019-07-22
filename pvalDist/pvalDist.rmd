@@ -519,6 +519,8 @@ glimpse(actual)
 \normalsize
 
 
+### Probability Type 1: `Probability %`
+
 As we can see there are several kind of probabilities non empty is
 `Probability %` only so we model the revenue using it:
 
@@ -552,6 +554,8 @@ plotdist(sim_pp)
 skim(sim_pp) %>% pander() # all simulations statistics
 ```
 
+
+### Probability Type 2: `Winning_Probability`
 
 
 now let's try to simulate revenues using `Winning_Probability` variable.
@@ -597,6 +601,10 @@ sim_win_prob <- pvalDist(pvec = ful.win.prob,
 plotdist(sim_win_prob)
 ```
 
+
+### Probability Type 3: `Predicted Probability` (Machine Learning)
+
+
 Lastly we'll simulate probabilities using Machine Learning for if we were in
 1 October 2018:
 
@@ -606,9 +614,14 @@ source("../../R_OPPO_PROB/_oppoJoinProbs.R", local = TRUE)
 nowwd <- getwd()
 setwd("../../R_OPPO_PROB")
 ml_prob <- oppoJoinProbs(given_date = "2018-10-01")
+
+setwd(nowwd)
+```
+
+
+```{r}
 head(ml_prob_slim <- ml_prob[, c("Opportunity ID", "Predicted Probability")])
 pprob <- ml_prob_slim$`Predicted Probability`
-setwd(nowwd)
 ```
 
 
@@ -652,7 +665,7 @@ plotdist(sim_ml_prob)
 ```
 
 
-Concluson.
+### Concluson.
 We haved proved upon simulation that our Probabilities model has highest fidelity.
 As We can see based on 3 probabilities types, simulation mean of the one based
 on Machine learning are much closer to the acutal value. Which is:
