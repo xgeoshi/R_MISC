@@ -10,59 +10,125 @@ x <- data.frame(case = c("case1", "case2", "case3", "case4", "case5", "case6", "
 p <- x$prob
 
 # Minimum Length (for 10 Success-Failures binomial condition) ----
-min.tail <- min(p, 1 - p) # min value of all range of both heads and tails
-min.len  <- ceiling(10 / min.tail) # min length to get 10 binom successes
+pMinLen <- function(p) {
+        
+        # check for probability condition
+        stopifnot(p >= 0 & p <= 1)
+        
+        # indexing zeroes an ones (0% & 100% probability)
+        p01 <- which(p == 0 | p == 1)
+        
+        # return NA if input consist of only zeroes and/or ones
+        if (length(p01) == length(p)) return(NA)
+        
+        # condition in case some zeroes and ones present
+        if (length(p01) > 0) {
+                # vector without zeroes & ones + meassge
+                non01_p <- p[-p01]
+                message("<pMinLen>: ", length(p01),
+                        " zeroes & ones are removed / total ", length(p), " p")
+        }
+        
+        # condition if there are no zeroes & ones
+        if (length(p01) == 0) non01_p <- p
+        
+        # min value of all range of both heads and tails of non zero & ones
+        min.p <- min(non01_p, 1 - non01_p)
+        # proportion to evaluate min length to get 10 binom successes
+        min.len  <- ceiling(10 / min.p)
+        
+        stopifnot(length(min.len) == 1L && min.len > 0)
+        message(min.p, " minimum length for bernulli success-failure cond: ",
+                min.len)
+        return(min.len)
+}
 
-
-bernulliTrial <- function(success_p, length) {
+# Return vector of Zero & Ones with given success (1) probability & given length
+bernulli <- function(success_p, length) {
+        
+        stopifnot(length(success_p) == 1L)
+        if (success_p == 0 | success_p == 1) return(rep(success_p, length))
+        
         sample(x       = c(0, 1),
                size    = length,
                replace = TRUE,
                prob    = c(1 - success_p, success_p))
-        
 }
-
-# trial1 <- bernulliTrial(success_p = 0.30, length = 25)
 
 # mean proportion of binomial distribution upon single success P and given len
 
-bernulliMean <- function(p., length) {
-        stopifnot(length(p.) == 1L)
-        mean(bernulliTrial(success_p = p., length = length))
-}
+# bernulliMean <- function(success_p, length) {
+#         
+#         stopifnot(length(success_p) == 1L)
+#         
+#         if (success_p == 0 | success_p == 1) return(success_p)
+#         
+#         if (success_p > 0 & success_p < 1) {
+#                 return(mean(bernulli(success_p = success_p, length = length)))}
+# }
 
 
 # list of binomial means for given P vector - p distibutions of given length
-pMeanDist <- function(pvec, rep = 10000, bern_len = min.len) {
+bernulliMeansDist <- function(pvec, rep = 10000, each, export = "n") {
         
-        distrs <- lapply(seq(length(pvec)), function(n) {
+        mlen <- pMinLen(pvec)
+        # stopifnot(mlen > 0)
+        
+        nthMean <- function(n) {
+
                 p <- pvec[n] # single nth probability value (vectorised)
-                prop.dist <- replicate(rep, bernulliMean(p. = p, length = bern_len))
-                return(prop.dist)
-        })
+
+                if (p == 0) p.dist <- numeric(length = rep)
+                if (p == 1) p.dist <- rep(1, length = rep)
+
+                if (p > 0 & p < 1) {
+                        p.dist <- replicate(rep,
+                                            mean(bernulli(success_p = p,
+                                                          length = mlen)))
+                }
+
+                return(p.dist)
+        }
         
-        stopifnot(length(distrs) == length(pvec))
-        names(distrs) <- pvec
-        return(distrs)
+        if (each) {
+                dist.ls <- foreach(n = seq(length(pvec)),
+                                   .export = export) %dopar% nthMean(n)
+                
+        } else {
+                
+                dist.ls <- lapply(seq(length(pvec)), nthMean(n))
+        }
+        
+        
+        stopifnot(length(unique(vapply(dist.ls, length, numeric(1)))) == 1L)
+        stopifnot(length(dist.ls) == length(pvec))
+        
+        names(dist.ls) <- paste0(seq_along(pvec), "_", pvec)
+        
+        return(dist.ls)
 }
 
-# names(pdists) <- x$prob # 
 
-require(gridExtra)
 require(ggplot2)
 require(data.table)
 require(forcats)
-plot.data <- list()
 
-for (r in seq(length(pmeandist))) {
-        plot.data[[r]] <- data.table(p = pmeandist[[r]], cat = names(pmeandist[r]))
+# pmeandist <- bernulliMeansDist(p)
+
+plotMeansDist <- function(pmeandist) {
+        plot.data <- list()
+        
+        for (r in seq(length(pmeandist))) {
+                plot.data[[r]] <- data.table(p = pmeandist[[r]],
+                                             cat = names(pmeandist[r]))
+        }
+        
+        # plotbind <- rbindlist(plot.data)
+        
+        ggplot(data = rbindlist(plot.data), aes(x = p)) +
+                geom_histogram() +
+                facet_wrap(~ as_factor(cat), scales = "free_x")
 }
-
-# plotbind <- rbindlist(plot.data)
-
-ggplot(data = rbindlist(plot.data), aes(x = p)) +
-        geom_histogram() +
-        facet_wrap(~ as_factor(cat), scales = "free_x")
 
 
 # VECTOR OF SIMULATED BINARY OUTCOMES UPON SINGLE RANDOM SUCCESS PROBABILITY
@@ -85,18 +151,44 @@ binarySim <- function(distr.p) {
         return(bin.sim)
 }
 
+# Apply each binary outcome to related revenue
+bernulliTimesVal <- function(values, distr) {
+        sum(values * binarySim(distr.p = distr))
+}
+
 
 # SIMULATED TOTAL REVENUE DISTRIBUTION
-pvalDist <- function(pvec, valvec = x$reve, rep = 10000) {
+pvalDist <- function(pvec, valvec, rep = 10000, parallel) {
         
-        pmeandist <- pMeanDist(pvec = pvec)
+        repl.args <- list(n = rep)
+        
+        if (parallel) {
+                require(future)
+                require(doFuture)
+                registerDoFuture()
+                plan(multisession)
+                
+                source("parallelRep.R", local = TRUE)
+                message("<pvalDist> parallel")
+                repl.args[["each"]] <- TRUE
+                repl.args[["export"]] <- c("bernulliTimesVal", "valvec",
+                                           "pmeandist","binarySim", "actual")
+                replX <- parallelRep
+                
+        } else {
+                replX <- replicate
+        }
+        
+        # Creating list of berbulli means distribution
+        pmeandist <- bernulliMeansDist(pvec = pvec, each = parallel)
         stopifnot(identical(length(pmeandist), length(valvec), length(pvec)))
         
-        rsim <- replicate(rep, {
-                # Apply each binary outcome to related revenue
-                rev <- sum(valvec * binarySim(pmeandist))
-                return(rev)
-        })
+        # Adding argument
+        repl.args[["expr"]] <- quote(bernulliTimesVal(values = valvec,
+                                                      distr = pmeandist))
+        
+        # CREATE OUTER FUNCTION FROM BELOW CODE
+        rsim <- do.call(replX, repl.args)
         
         stopifnot(length(rsim) == rep)
         return(rsim)
@@ -104,5 +196,8 @@ pvalDist <- function(pvec, valvec = x$reve, rep = 10000) {
 
 
 
-simdist <- pvalDist(pvec = x$prob, valvec = x$reve, rep = 10000)
+simdist <- pvalDist(pvec = actual$`Probability %`,
+                    valvec = actual$`Amount USD`,
+                    rep = 100,
+                    parallel = TRUE)
 hist(simdist)
