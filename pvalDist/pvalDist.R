@@ -96,7 +96,7 @@ bernulliMeansDist <- function(pvec, rep = 10000, each, export = "n") {
                 
         } else {
                 
-                dist.ls <- lapply(seq(length(pvec)), nthMean(n))
+                dist.ls <- lapply(seq(length(pvec)), function(n) nthMean(n))
         }
         
         

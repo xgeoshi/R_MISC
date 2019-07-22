@@ -1,5 +1,6 @@
 ---
 title: "Simulation of Revenue Distribution in R language. Process Reveal."
+# mainfont: DejaVu Sans
 output:
   pdf_document:
     toc: true
@@ -235,8 +236,9 @@ bernulli <- function(success_p, length) {
 # Function to create deviation distribution of given length for each p
 # list of binomial means for given P vector - p distibutions of given length
 # list of binomial means for given P vector - p distibutions of given length
-bernulliMeansDist <- function(pvec, rep = 10000, each, export = "n") {
-        
+bernulliMeansDist <- function(pvec, rep = 10000, each, export) {
+        require(foreach)
+  
         mlen <- pMinLen(pvec)
         # stopifnot(mlen > 0)
         
@@ -258,11 +260,11 @@ bernulliMeansDist <- function(pvec, rep = 10000, each, export = "n") {
         
         if (each) {
                 dist.ls <- foreach(n = seq(length(pvec)),
-                                   .export = export) %dopar% nthMean(n)
+                                   .export = export) %dopar% nthMean(n = n)
                 
         } else {
                 
-                dist.ls <- lapply(seq(length(pvec)), nthMean(n))
+                dist.ls <- lapply(seq(length(pvec)), function(n) nthMean(n))
         }
         
         
@@ -280,7 +282,7 @@ bernulliMeansDist <- function(pvec, rep = 10000, each, export = "n") {
 
 Deviations Distributions:
 ```{r, cache=FALSE}
-pmeandist <- pMeanDist(pvec = src$prob, rep = 10000)
+pmeandist <- bernulliMeansDist(pvec = src$prob, rep = 10000, each = FALSE, export = "mtcars")
 str(pmeandist)
 
 ```
@@ -361,7 +363,12 @@ bernulliTimesVal <- function(values, distr) {
 }
 
 # SIMULATED TOTAL REVENUE DISTRIBUTION
-pvalDist <- function(pvec, valvec, rep = 10000, parallel) {
+pvalDist <- function(pvec,
+                     valvec,
+                     rep = 10000,
+                     parallel,
+                     export = c("bernulliTimesVal", "valvec",
+                                           "pmeandist", "binarySim", "actual")) {
         
         repl.args <- list(n = rep)
         
@@ -374,8 +381,7 @@ pvalDist <- function(pvec, valvec, rep = 10000, parallel) {
                 source("parallelRep.R", local = TRUE)
                 message("<pvalDist> parallel")
                 repl.args[["each"]] <- TRUE
-                repl.args[["export"]] <- c("bernulliTimesVal", "valvec",
-                                           "pmeandist","binarySim", "actual")
+                repl.args[["export"]] <- export
                 replX <- parallelRep
                 
         } else {
@@ -383,7 +389,8 @@ pvalDist <- function(pvec, valvec, rep = 10000, parallel) {
         }
         
         # Creating list of berbulli means distribution
-        pmeandist <- bernulliMeansDist(pvec = pvec, each = parallel)
+        pmeandist <- bernulliMeansDist(pvec = pvec, each = parallel,
+                                       export = export)
         stopifnot(identical(length(pmeandist), length(valvec), length(pvec)))
         
         # Adding argument
@@ -399,51 +406,79 @@ pvalDist <- function(pvec, valvec, rep = 10000, parallel) {
 
 ```
 
-```{r, cache=TRUE}
+
+```{r, cache=TRUE, message=FALSE}
 set.seed(1)
 simdist <- pvalDist(pvec = src$prob, valvec = src$reve, rep = 10000,
                     parallel = TRUE)
 ```
 
+
 Output head:
+
+
 ```{r}
 str(simdist)
 ```
 
+
 Total Revenue Distribution Simulation Histogram:
+
 
 ```{r, plotartif, message=FALSE, echo=FALSE}
 require(ggplot2)
-ggplot(data = as.data.table(simdist)) +
-  geom_histogram(aes(x = simdist, y = ..density..)) +
-  scale_x_continuous("revenue", labels = scales::dollar_format()) +
-  scale_y_continuous("density") +
-  geom_vline(aes(xintercept = mean(simdist)), col = 'black', size = 1) +
-  geom_text(aes(label = paste0("mean: ", mean(simdist)), y = 0, x = mean(simdist)),
-            vjust = -0.4, hjust = -0.05, col = 'white', size = 5)
+require(scales)
+plotdist <- function(simdist) {
+        ggplot(data = as.data.table(simdist)) +
+          geom_histogram(aes(x = simdist, y = ..density..)) +
+          scale_x_continuous("revenue", labels = scales::dollar_format()) +
+          scale_y_continuous("density") +
+          geom_vline(aes(xintercept = mean(simdist)), col = 'black', size = 1) +
+          geom_text(aes(label = paste0("mean: ",
+                                       scales::dollar(mean(simdist))),
+                        y = 0, x = mean(simdist)),
+                    vjust = -0.4, hjust = -0.05, col = 'white', size = 5)
+}
+
+plotdist(simdist = simdist)
 ```
 
+
 Mathematical Expectation of Example Dataset is exactly around simulated mean!:
+
+
 ```{r, mathexpnum}
 sum(src$reve * src$p)
 ```
 
+
 Those we can conclude that is this algorythim doesn't catch mean on actual data
 it means that probabilities are far from perfect.
 
+\newpage
 
 ## Real Data
 
+
 Now we'll apply this approach to real data.
+
 
 We'll use data from snapshot of 2018 October 1 which is closed for today (so we could evaluate simulation).
 
+
+\scriptsize
+
+
 Code for download:
+
+
 ```{r, message = FALSE, cache=TRUE}
 source("_000sqlQueryDB.R")
+require(data.table)
 require(dplyr)
 
-actual <- sqlQueryDB("SELECT [Opportunity ID], [Winning_Probability], [Probability %], [Probability_Of_Success], [Predicted Probability], [wonnow], [Amount USD], [AmountUSDnow]
+actual <- sqlQueryDB("SELECT [Opportunity ID], [Winning_Probability], [Probability %],
+[Probability_Of_Success], [Predicted Probability], [wonnow], [Amount USD], [AmountUSDnow]
       FROM (SELECT
             pre.*,
             now.[IsClosed] AS close2,
@@ -471,57 +506,173 @@ WHERE (CAST(SnapshotDate AS date) = CAST('2018-10-01' AS date)) AND (SnapshotTyp
 		[Opportunity Type]
 		FROM [datamart_tableau].[dbo].[vCRM_SF_MasterDataSource_Snapshot] AS targ
 		WHERE
-		[IsClosed] IN (1) AND [SnapshotDate] = (SELECT max([SnapshotDate]) from [datamart_tableau].[dbo].[vCRM_SF_MasterDataSource_Snapshot])) as now
+		[IsClosed] IN (1) AND [SnapshotDate] = (SELECT max([SnapshotDate]) from
+		[datamart_tableau].[dbo].[vCRM_SF_MasterDataSource_Snapshot])) as now
  ON pre.[Opportunity ID] = now.[Opportunity ID]) AS final")
 
-head(actual, 20)
+setDT(actual)
+glimpse(actual)
 
 ```
 
+
+\normalsize
+
+
 As we can see there are several kind of probabilities non empty is
 `Probability %` only so we model the revenue using it:
-```{r}
+
+
+
+```{r, message=FALSE, warning=FALSE}
 require(skimr)
-skim(actual$`Probability %`)
+prp <- actual$`Probability %`
+skim(prp) %>% pander()
 ```
 
 
 
 ```{r, cache=TRUE}
-sim_pp <- pvalDist(pvec = actual$`Probability %`, valvec = actual$`Amount USD`, rep = 10000, parallel = TRUE)
-hist(sim_pp)
-skim(sim_pp) # all simulations statistics
+require(skimr)
+sim_pp <- pvalDist(pvec = actual$`Probability %`,
+                   valvec = actual$`Amount USD`,
+                   rep = 10000,
+                   parallel = TRUE)
+
 ```
 
+
+```{r, message=FALSE}
+plotdist(sim_pp)
+```
+
+
+
+```{r, warning=FALSE}
+skim(sim_pp) %>% pander() # all simulations statistics
+```
+
+
+
 now let's try to simulate revenues using `Winning_Probability` variable.
-Since there lot's of missing values we'll replace missing with `Probability %`  
+Since there lot's of missing values we'll replace missing with `Probability %`
 
 Without imputation (423 missing values):
 
-```{r}
-skim(actual$Winning_Probability)
+
+```{r, warning=FALSE}
+wpr <- actual$Winning_Probability
+skim(wpr) %>% pander()
 ```
+
+
 
 ```{r}
 require(dplyr)
 ful.win.prob <- case_when(is.na(actual$Winning_Probability) ~ actual$`Probability %`,
                           TRUE ~ actual$Winning_Probabilit)
-skim(ful.win.prob) # inspecting for non missing probabilities vector
+
 ```
+
+
+```{r, warning=FALSE}
+skim(ful.win.prob) %>% pander() # inspecting for non missing probabilities vector
+```
+
+
 simulating revenues using new probabilities source:
+
 
 ```{r, cache=TRUE}
 sim_win_prob <- pvalDist(pvec = ful.win.prob,
                          valvec = actual$`Amount USD`,
                          rep = 10000,
                          parallel = TRUE)
-hist(sim_win_prob)
+
 ```
-Lastly we'll simulate probabilities using Machine Learning for if we were in 
+
+
+
+```{r, message=FALSE}
+plotdist(sim_win_prob)
+```
+
+Lastly we'll simulate probabilities using Machine Learning for if we were in
 1 October 2018:
 
+
+```{r, message=FALSE, cache=FALSE}
+source("../../R_OPPO_PROB/_oppoJoinProbs.R", local = TRUE)
+nowwd <- getwd()
+setwd("../../R_OPPO_PROB")
+ml_prob <- oppoJoinProbs(given_date = "2018-10-01")
+head(ml_prob_slim <- ml_prob[, c("Opportunity ID", "Predicted Probability")])
+pprob <- ml_prob_slim$`Predicted Probability`
+setwd(nowwd)
+```
+
+
+```{r, warning=FALSE}
+skim(pprob) %>% pander()
+```
+
+
+Now we'll join siulate probabilities for given date to our `actual` dataset:
+
+
 ```{r}
+join_ml <- left_join(actual, ml_prob_slim, by = "Opportunity ID")
+head(join_ml)
 
 ```
 
 
+now let's see if there are any missing..
+
+
+```{r, warning=FALSE}
+pprob.y <- join_ml$`Predicted Probability.y`
+skim(pprob.y) %>% pander()
+```
+
+
+No, 0 missings. So we can start simulation.
+
+
+```{r, cache = TRUE}
+sim_ml_prob <- pvalDist(pvec = join_ml$`Predicted Probability.y`,
+                         valvec = join_ml$`Amount USD`,
+                         rep = 10000,
+                         parallel = TRUE)
+```
+
+
+```{r, message = FALSE}
+plotdist(sim_ml_prob)
+```
+
+
+Concluson.
+We haved proved upon simulation that our Probabilities model has highest fidelity.
+As We can see based on 3 probabilities types, simulation mean of the one based
+on Machine learning are much closer to the acutal value. Which is:
+
+
+```{r}
+require(scales)
+scales::dollar(actual[wonnow == "1", sum(`Amount USD`)])
+```
+
+
+
+Or could be in case Amounts per Opportinity won't change:
+
+```{r}
+scales::dollar(actual[wonnow == "1", sum(AmountUSDnow)])
+```
+
+
+
+
+So the next step is to add Coefficient that would simulate Changes in
+Opportunity amount on random... To be continued...
