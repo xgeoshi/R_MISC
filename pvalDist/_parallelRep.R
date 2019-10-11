@@ -7,6 +7,9 @@ parallelRep <- function(n,
                         expr,
                         each,
                         export) {
+        
+        source("_binarySim.R", local = TRUE)    
+    
         # print("parallel execute")
         # 
         # require(doParallel)

@@ -5,7 +5,7 @@ output:
   pdf_document:
     toc: true
     df_print: kable
-    # toc_depth: 1
+    toc_depth: 4
     # number_sections: true
 ---
 
@@ -28,22 +28,26 @@ conducted within hundreds thousand iteration.
 
 
 ## Generate small random dataset to start with.
-### Why
+### Why using small dataset
 In order to make it easier to understand how the full cycle of simulation works
 and what results it leads to, I apply it to artificially created small dataset:
 
-### Small dataset
+### Data exploration
 
 <!-- R code for dataset creation:   -->
 
-```{r, source, echo=FALSE, message=FALSE}
+```{r, source, echo=FALSE, message=FALSE, cache=TRUE}
+
 require(data.table)
+
 src <- data.frame(
   case = c("case1", "case2", "case3", "case4", "case5", "case6", "case7", "case8", "case9"),
   prob = c(0.85, 0.2345, 0.0555, 0.001, 0.35, 0.16, 0.68, 0.4, 0.12),
   revenue = c(15000, 10000, 5000, 5000, 7000, 2000, 3000, 4000, 1000),
   stringsAsFactors = FALSE)
+
 src <- as.data.table(src)
+
 ```
 
 Simulated data source have size of `r ncol(src)` columns & `r nrow(src)` rows.
@@ -63,11 +67,14 @@ Simulated data source have size of `r ncol(src)` columns & `r nrow(src)` rows.
 Let's have a look on a small dataset in table format:
 
 ```{r, printsrc, echo=FALSE}
+
 src
+
 ```
 
-R Code used to create source (mentioned above):
-```{r, srccode}
+<!-- R Code used to create source (mentioned above): -->
+```{r, srccode, cache = TRUE, echo = FALSE}
+
 src <- data.frame(
   case = c("case1", "case2", "case3", "case4", "case5", "case6", "case7", "case8", "case9"),
   prob = c(0.85, 0.2345, 0.0555, 0.001, 0.35, 0.16, 0.68, 0.4, 0.12),
@@ -75,12 +82,13 @@ src <- data.frame(
   stringsAsFactors = FALSE)
 
 p <- src$prob # Storing Probabilities as separate vector "p"
+
 ```
 
 <!-- \newpage -->
 
 
-## Pipeline:  
+### Pipeline:  
 
 In order to create revenue distribution (simulations) we will go through the
 following steps:  
@@ -96,7 +104,7 @@ Revenue Distribution
 &nbsp;
 
 
-### Pipeline: part 1. Generate Probability Deviation Distribution
+#### Pipeline: part 1. Generate Probability Deviation Distribution
 
 Probability Deviation Distributions computed as a vector of certain length of
 zeroes and ones (`"Bernulli trials"`) with given probability of success. This
@@ -106,10 +114,11 @@ random chance.
 Let's have a look on a vector, say length = 25 with given 30% probability of
 success.  
 
-Code for a function:  
+<!-- Code for a function:   -->
 
-```{r}
-set.seed(11)
+```{r, echo = FALSE}
+
+# Return vector of Zero & Ones with given success (1) probability & given length
 bernulli <- function(success_p, length) {
         
         stopifnot(length(success_p) == 1L)
@@ -119,7 +128,9 @@ bernulli <- function(success_p, length) {
                size    = length,
                replace = TRUE,
                prob    = c(1 - success_p, success_p))
+
 }
+
 ```
 
 
@@ -128,9 +139,10 @@ bernulli <- function(success_p, length) {
 
 Function Evaluation Output:
 
-```{r}
+```{r, cache=TRUE}
 set.seed(22)
 print(bernulli_trial_1 <- bernulli(success_p = 0.30, length = 25))
+
 ```
 
   
@@ -140,7 +152,9 @@ print(bernulli_trial_1 <- bernulli(success_p = 0.30, length = 25))
 As we can see vector's mean value is near given 0.3 probability since it's
 randomly generated:
 ```{r}
+
 mean(bernulli_trial_1)
+
 ```
 
 
@@ -151,9 +165,11 @@ If we run same function again we would get slightly different result,
 since function is randomized over the mean and it should follow
 normal distribution if all the required conditions are met:
 
-```{r}
+```{r, cache=TRUE}
+
 set.seed(14)
 print(bernulli_trial_2 <- bernulli(success_p = 0.30, length = 25))
+
 ```
 
 
@@ -162,7 +178,9 @@ print(bernulli_trial_2 <- bernulli(success_p = 0.30, length = 25))
 
 Check second vector mean value again:
 ```{r}
+
 mean(bernulli_trial_2)
+
 ```
 
 
@@ -180,7 +198,9 @@ We perform a check up of the simulated vector of length 25 to be sufficient in
 case of given 30% probability success, as follows:
 
 ```{r}
+
 t(c("25 * 0.3" = 0.3 * 25, "25 * 0.7" = (1 - 0.3) * 25))
+
 ```
 
 
@@ -191,7 +211,9 @@ t(c("25 * 0.3" = 0.3 * 25, "25 * 0.7" = (1 - 0.3) * 25))
 sufficient longer vector using the following equation:
 
 ```{r}
+
 print(length_for_30p <- 10 / min(c(1 - 0.3, 0.3)))
+
 ```
 
 
@@ -200,7 +222,9 @@ print(length_for_30p <- 10 / min(c(1 - 0.3, 0.3)))
 
 Let's check the sufficiency of the new vetor length > 10 success condition:
 ```{r}
+
 t(c("0.3" = length_for_30p * 0.3, "0.7" = length_for_30p * (1 - 0.3)))
+
 ```
 
 
@@ -213,12 +237,14 @@ identical conditions while simulation, so we would have to take the longest
 suitable vector among all cases and apply it for every case.  
 
 Identifying the longest of sufficient vectors as a proportion for length size
-(to be at least 10):
+(to be at least 10 success & failures):
 
 ```{r tail}
+
 # Minimum Length (for 10 Success-Failures binomial condition) ----
 min.tail <- min(p, 1 - p) # min value of all range of both heads and tails
 print(min.len  <- ceiling(10 / min.tail)) # min length to get 10 binom successes
+
 ```
 
 
@@ -231,7 +257,8 @@ define required length of the vector for probabilities means simulation.
 
 Code:
 
-```{r}
+```{r, pminlenfun, echo = FALSE}
+
 # Minimum Length (for 10 Success-Failures binomial condition) ----
 pMinLen <- function(p) {
         
@@ -265,12 +292,15 @@ pMinLen <- function(p) {
                 min.len)
         return(min.len)
 }
+
 ```
 
 
 Check the contents of the vector `p`:
-```{r}
+```{r, printp}
+
 print(p)
+
 ```
 
 
@@ -279,8 +309,10 @@ print(p)
 
 Applying vector `p` as an argument to the function written above:
 
-```{r}
+```{r, printpminlen}
+
 print(min.length <- pMinLen(p = p))
+
 ```
 
 
@@ -288,25 +320,13 @@ Now we need to create functions that creates distribustion of length given above
 for each probability we have and repeat the process given times.  
 10K would be enough for our purposes.  
 
-Code:
+<!-- Code: -->
 
-```{r}
-# Return vector of Zero & Ones with given success (1) probability & given length
-bernulli <- function(success_p, length) {
-        
-        stopifnot(length(success_p) == 1L)
-        if (success_p == 0 | success_p == 1) return(rep(success_p, length))
-        
-        sample(x       = c(0, 1),
-               size    = length,
-               replace = TRUE,
-               prob    = c(1 - success_p, success_p))
-}
+```{r, bernoullimeansdistfun, echo = FALSE}
 
 # Function to create deviation distribution of given length for each p
 # list of binomial means for given P vector - p distibutions of given length
-# list of binomial means for given P vector - p distibutions of given length
-bernulliMeansDist <- function(pvec, rep = 10000, each, export) {
+bernulliMeansDist <- function(pvec, rep = 10000, each, export, error = FALSE) {
         require(foreach)
   
         mlen <- pMinLen(pvec)
@@ -337,11 +357,29 @@ bernulliMeansDist <- function(pvec, rep = 10000, each, export) {
                 dist.ls <- lapply(seq(length(pvec)), function(n) nthMean(n))
         }
         
-        
         stopifnot(length(unique(vapply(dist.ls, length, numeric(1)))) == 1L)
         stopifnot(length(dist.ls) == length(pvec))
         
         names(dist.ls) <- paste0("case", seq_along(pvec), "_p", pvec)
+        
+        
+        # TEMP!!!!!
+        if (error) {
+            require(dplyr)
+            applyErr <- function(p, err) {
+      
+            xp <- p + (p * sample(err, size = length(p), replace = TRUE))
+            xp <- case_when(xp < 0L ~ 0,
+                            xp > 1L ~ 1,
+                            TRUE ~ xp)
+            return(xp)
+      
+            }
+    
+            #temp
+            dist.ls[] <- lapply(dist.ls, function(yo) applyErr(p = yo, err = err))
+            message("TRUE")
+        }
         
         return(dist.ls)
 }
@@ -355,12 +393,17 @@ bernulliMeansDist <- function(pvec, rep = 10000, each, export) {
 Executing functions mentioned above to get probabilities random deviation
 distributions and viewing heading of the output list of values:
 
-```{r, pmeansdist, message = FALSE, cache=FALSE}
+```{r, pmeansdist, echo = TRUE, message = FALSE, cache = FALSE}
+require(data.table)
+require(kableExtra)
 pmeandist <- bernulliMeansDist(pvec = src$prob,
                                rep = 10000,
                                each = FALSE,
                                export = "mtcars")
-str(pmeandist)
+# str(pmeandist)
+head(as.data.table(pmeandist)) %>% 
+  kable(format = "latex", booktabs = T) %>%
+  kable_styling(latex_options = c("striped", "scale_down"))
 
 ```
 
@@ -370,10 +413,12 @@ str(pmeandist)
 
 Let's Plot histograms of Probability Deviations for every case we had:
 
-```{r, message=FALSE, warning=FALSE, echo=FALSE, cache=FALSE}
+```{r, plot_p_dists, message = FALSE, warning = FALSE, echo = FALSE, cache = TRUE}
+
 require(ggplot2)
 require(data.table)
 require(forcats)
+
 plot.data <- list()
 
 for (r in seq(length(pmeandist))) {
@@ -384,17 +429,20 @@ for (r in seq(length(pmeandist))) {
 ggplot(data = rbindlist(plot.data), aes(x = p)) +
         geom_histogram() +
         facet_wrap(~ as_factor(cat), scales = "free_x")
+
 ```
 
 \newpage
 
-### Pipeline: part 2. Simulate binary outcome per case (success-failure)
+#### Pipeline: part 2. Simulate binary outcome per case 
+(success-failure outcome given success probability)
 
 Now we need to simulate binary oucomes upon simulated probabilities distrbutions.
 
-Code:
+<!-- Code: -->
 
-```{r}
+```{r, binarysim, echo = FALSE}
+
 # VECTOR OF SIMULATED BINARY OUTCOMES UPON SINGLE RANDOM SUCCESS PROBABILITY
 # FROM EACH DISTRIBUTION OF PROBABILITIES 
 binarySim <- function(distr.p) {
@@ -423,25 +471,27 @@ binarySim <- function(distr.p) {
 
 Example of outcome after repeated running for x10 times:
 
-```{r, cache=FALSE}
+
+```{r, binarysimout, cache = FALSE}
 set.seed(2)
-replicate(10, binarySim(pmeandist))
+as.data.table(replicate(10, binarySim(pmeandist))) %>% kable()
+
 ```
 
 
 &nbsp;
 
 
-### Pipeline: part 3. Binary outcomes multiply by contract Value.
+#### Pipeline: part 3. Binary outcomes multiply by contract Value.
 
 Finaly we add everything up.
 We use 10000 simulated binary outcomes per each case, combine it with 
 related Opportunity ID revenue and sum all values to have simulation of Total Revnue.
 And Repeat x10K Times.
 
-Code:
+<!-- Code: -->
 
-```{r, cache=TRUE}
+```{r, cache = FALSE}
 
 # Apply each binary outcome to related revenue
 bernulliTimesVal <- function(values, distr, coefs = NULL) {
@@ -470,7 +520,8 @@ pvalDist <- function(pvec,
                      parallel,
                      export = c("bernulliTimesVal", "valvec",
                                 "pmeandist", "binarySim", "actual", "coefs"),
-                     coefs = NULL) {
+                     coefs = NULL,
+                     error = FALSE) {
         
         repl.args <- list(n = rep)
         
@@ -480,7 +531,7 @@ pvalDist <- function(pvec,
                 registerDoFuture()
                 plan(multisession)
                 
-                source("parallelRep.R", local = TRUE)
+                source("_parallelRep.R", local = TRUE)
                 message("<pvalDist> parallel")
                 repl.args[["each"]] <- TRUE
                 repl.args[["export"]] <- export
@@ -492,7 +543,7 @@ pvalDist <- function(pvec,
         
         # Creating list of berbulli means distribution
         pmeandist <- bernulliMeansDist(pvec = pvec, each = parallel,
-                                       export = export)
+                                       export = export, error = error)
         stopifnot(identical(length(pmeandist), length(valvec), length(pvec)))
         
         # Adding argument
@@ -510,17 +561,25 @@ pvalDist <- function(pvec,
 ```
 
 
-```{r, cache=TRUE, message=FALSE, cache=FALSE}
+```{r, message = FALSE, cache = TRUE}
+setwd("../pvalDist")
 set.seed(1)
-simdist <- pvalDist(pvec = src$prob, valvec = src$revenue, rep = 10000,
-                    parallel = TRUE)
+simdist <- pvalDist(pvec     = src$prob,
+                    valvec   = src$revenue,
+                    rep      = 10000,
+                    parallel = TRUE,
+                    error    = FALSE)
+
 ```
+
 
 Output head:
 
 
 ```{r}
+
 str(simdist)
+
 ```
 
 
@@ -529,9 +588,12 @@ str(simdist)
 
 Total Revenue Distribution Simulation Histogram:
 
-```{r, plotartif, message=FALSE, echo=FALSE}
+
+```{r, plotartifun, echo = FALSE}
+
 require(ggplot2)
 require(scales)
+require(data.table)
 
 plotdist <- function(simdist) {
         ggplot(data = as.data.table(simdist)) +
@@ -546,25 +608,35 @@ plotdist <- function(simdist) {
                     vjust = -0.4, hjust = -0.05, col = 'white', size = 5) +
         theme(axis.text.x = element_text(angle = 90, hjust = 1))
 }
+
 ```
 
 
-```{r}
+```{r, plotartif, message = FALSE}
+
 plotdist(simdist = simdist)
+
 ```
 
-### Conclusion on a small dataset.
 
-Mathematical Expectation is exactly around mean of simulated distribution so
-we may assume that simulation works as expected and the real value might be out
-of the simulated range only in case of poor probabilities estimation.
+### Conclusion.
 
+Mathematical Expectation is very near to the mean of simulated distribution so
+we may assume that simulation works as expected. Cases if actual value would be 
+out of the simulated range can be explained just by poor probabilities
+estimation e.g. the closer real value to simulated mean the better probabilities
+are.
 
+Mathematical Expectation:
 ```{r, mathexpnum}
-sum(src$reve * src$p)
+
+scales::dollar(sum(src$revenue * src$p))
+
 ```
+
 
 \newpage
+
 
 ## Real Data
 
@@ -586,53 +658,18 @@ evaluating simulation accuracy.
 \scriptsize
 
 
-Code for download:
+SQL Code for source creation:
 
 
-```{r, message = FALSE, cache=TRUE}
-source("_000sqlQueryDB.R")
+```{r, probgiveinlast, message = FALSE, cache = TRUE}
 require(data.table)
 require(dplyr)
 
-actual <- sqlQueryDB("SELECT [Opportunity ID], [Winning_Probability],
-[Probability %], [Probability_Of_Success], [Predicted Probability], [wonnow],
-[Amount USD], [AmountUSDnow]
-      FROM (SELECT
-            pre.*,
-            now.[IsClosed] AS close2,
-            now.[Stage Name] AS stg2,
-            now.[SnapshotDate] AS snap2,
-            now.[IsWon] AS wonnow,
-            now.[Amount USD] AS AmountUSDnow,
-            now.[Accurate revenue estimate Current FY] as CurrentFYnow,
-            now.[Opportunity Type] AS otypenow
-  		FROM (SELECT *
-FROM datamart_tableau.dbo.vCRM_SF_MasterDataSource_Snapshot
-WHERE (CAST(SnapshotDate AS date) = CAST('2018-10-01' AS date)) AND
-(SnapshotType = 'WEEKLY') AND
-						[IsClosed] = 0 AND
-						[Stage Name] NOT IN ('Agreement/Closing',
-						'Work at risk', 'Won/Signed')
-						) as pre
-  INNER JOIN
-	  (SELECT
-		[Opportunity ID],
-		[IsClosed],
-		[Stage Name],
-		[SnapshotDate],
-		[IsWon],
-		[Accurate revenue estimate Current FY],
-		[Amount USD],
-		[Opportunity Type]
-		FROM
-		[datamart_tableau].[dbo].[vCRM_SF_MasterDataSource_Snapshot] AS targ
-		WHERE
-		[IsClosed] IN (1) AND [SnapshotDate] = (SELECT max([SnapshotDate]) from
-		[datamart_tableau].[dbo].[vCRM_SF_MasterDataSource_Snapshot])) as now
- ON pre.[Opportunity ID] = now.[Opportunity ID]) AS final")
-
-setDT(actual)
-glimpse(actual)
+# source("../../R_OPPO_PROB/_oppoJoinProbs.R")
+source("../../R_OPPO_PROB/_probGiveInLast.R")
+setwd("../../R_OPPO_PROB")
+data20181001 <- setDT(probGiveInLast(given_date = "2018-10-01"))
+actual <- copy(data20181001)
 
 ```
 
@@ -643,12 +680,12 @@ glimpse(actual)
 &nbsp;
 
 
-## 3 Probabilities Type to evaluate using simulation
+### 3 Probabilities Types to evaluate
 
-There will be 3 Probailities type:
-- `Machine Learning` ("hand made")
-- `Probability %` - project managmet expectations
-- `Winning_Probability` - SalesForce prediction
+There are 3 Probailities types to evaluate:  
+  - `Probability %` - project managmet expectations  
+  - `Winning_Probability` - SalesForce prediction  
+  - `Predicted Probability` is a `Machine Learning` ("hand made") probabilities  
 
 
 Let's take a look on each of them:
@@ -657,60 +694,98 @@ Let's take a look on each of them:
 &nbsp;
 
 
-### Probability Type 1: `Probability %`
+#### Probability Type 1: `Probability %`
 
-As we can see there are several kind of probabilities non empty is
-`Probability %` only so we model the revenue using it:
+Summary statistics on `Probability %` variable:
 
 
-```{r, message=FALSE, warning=FALSE}
+```{r, message = FALSE, warning = FALSE}
+
 require(skimr)
 prp <- actual$`Probability %`
 skim(prp) %>% pander()
+
+```
+
+
+Simulating revenue distribution using `Probability %` variable
+
+
+```{r, cache = TRUE}
+
+err <- actual$`Probability %` - actual$now_IsWon
+
+sim_pp <- pvalDist(pvec     = actual$`Probability %`,
+                   valvec   = actual$`Amount USD`,
+                   rep      = 10000,
+                   parallel = TRUE,
+                   error    = FALSE)
+
+sim_p2 <- pvalDist(pvec     = actual$`Probability %`,
+                   valvec   = actual$`Amount USD`,
+                   rep      = 10000,
+                   parallel = TRUE,
+                   error    = TRUE)
+
 ```
 
 
-```{r, cache=TRUE}
-require(skimr)
-sim_pp <- pvalDist(pvec = actual$`Probability %`,
-                   valvec = actual$`Amount USD`,
-                   rep = 10000,
-                   parallel = TRUE)
-
-```
+Plot Revenue Distrbution upon `Probability %` variable:
 
 
 ```{r, message=FALSE}
+
 plotdist(sim_pp)
-```
+plotdist(sim_p2)
 
-
-
-```{r, warning=FALSE}
-skim(sim_pp) %>% pander() # all simulations statistics
 ```
 
 
 &nbsp;
 
 
-### Probability Type 2: `Winning_Probability`
+Summary statiscts of revenue distribution using `Probability %`:
 
 
-now let's try to simulate revenues using `Winning_Probability` variable.
-Since there lot's of missing values we'll replace missing with `Probability %`
+```{r, message=FALSE, warning=FALSE}
 
-Without imputation (423 missing values):
+skim(sim_pp) %>% pander() # all simulations statistics
 
-
-```{r, warning=FALSE}
-wpr <- actual$Winning_Probability
-skim(wpr) %>% pander()
 ```
 
 
+&nbsp;
 
-```{r}
+
+#### Probability Type 2: `Winning_Probability`
+
+
+now let's try to simulate revenues using `Winning_Probability` variable.
+
+
+&nbsp;
+
+
+Summary Statistics of `Winning_Probability` variable (423 missing values):
+
+
+```{r, message=FALSE, warning=FALSE}
+
+wpr <- actual$Winning_Probability
+skim(wpr) %>% pander()
+
+```
+
+
+&nbsp;
+
+
+Imputation. Since there lot's of missing values we'll replace missing
+`Winning_Probability` with `Probability %`
+
+
+```{r, message=FALSE}
+
 require(dplyr)
 ful.win.prob <- case_when(is.na(actual$Winning_Probability) ~ actual$`Probability %`,
                           TRUE ~ actual$Winning_Probabilit)
@@ -719,70 +794,96 @@ ful.win.prob <- case_when(is.na(actual$Winning_Probability) ~ actual$`Probabilit
 
 
 ```{r, warning=FALSE}
+
 skim(ful.win.prob) %>% pander() # inspecting for non missing probabilities vector
+
 ```
 
 
 &nbsp;
 
 
-simulating revenues using new probabilities source:
+Simulating revenue distribution using modified (imputation)
+`Winning_Probability` variable:
 
 
-```{r, cache=TRUE}
-sim_win_prob <- pvalDist(pvec = ful.win.prob,
-                         valvec = actual$`Amount USD`,
-                         rep = 10000,
+```{r, cache=FALSE}
+
+sim_win_prob <- pvalDist(pvec     = ful.win.prob,
+                         valvec   = actual$`Amount USD`,
+                         rep      = 10000,
                          parallel = TRUE)
 
 ```
 
 
+Plot revenue distribution upon `Winning_Probability` variable:
+
 
 ```{r, message=FALSE}
+
 plotdist(sim_win_prob)
+
+```
+
+
+Revenue Distribution summary statistics:
+```{r, message=FALSE, warning=FALSE}
+
+skim(sim_win_prob) %>% pander() # all simulations statistics
+
 ```
 
 
 &nbsp;
 
 
-### Probability Type 3: `Predicted Probability` (Machine Learning)
+#### Probability Type 3: `Predicted Probability` (Machine Learning)
 
 
-Lastly we'll simulate probabilities using Machine Learning for if we were in
-1 October 2018:
+Lastly we'll simulate probabilities using Machine Learning like if we were in
+1 October 2018. All adjustment identical to what we have in production:
 
 
 ```{r, message=FALSE, cache=FALSE}
-source("../../R_OPPO_PROB/_oppoJoinProbs.R", local = TRUE)
-nowwd <- getwd()
-setwd("../../R_OPPO_PROB")
-ml_prob <- oppoJoinProbs(given_date = "2018-10-01")
-setwd(nowwd)
+
+# source("../../R_OPPO_PROB/_oppoJoinProbs.R", local = TRUE)
+# nowwd <- getwd()
+# setwd("../../R_OPPO_PROB")
+# ml_prob <- oppoJoinProbs(given_date = "2018-10-01")
+# setwd(nowwd)
+actual[now_IsWon == 1]$now_AmountUSD
 ```
 
 
 ```{r}
-head(ml_prob_slim <- ml_prob[, c("Opportunity ID", "Predicted Probability")])
-pprob <- ml_prob_slim$`Predicted Probability`
+
+head(actual[, c("Opportunity_ID", "Predicted Probability")])
+pprob <- actual$`Predicted Probability`
+
 ```
 
 
-```{r, warning=FALSE}
+Summary statistics on `Predicted Probability` (Machine Learning) probabilities:
+
+
+```{r, message=FALSE, warning=FALSE}
+
 skim(pprob) %>% pander()
+
 ```
 
 
 &nbsp;
 
 
-Now we'll join siulate probabilities for given date to our `actual` dataset:
+Now we'll join predicted probabilities for given date to our `actual` dataset:
 
 
 ```{r}
-join_ml <- left_join(actual, ml_prob_slim, by = "Opportunity ID")
-head(join_ml)
+
+# join_ml <- left_join(actual, ml_prob_slim, by = "Opportunity ID")
+# head(join_ml)
 
 ```
 
@@ -793,70 +894,97 @@ head(join_ml)
 now let's see if there are any missing..
 
 
-```{r, warning=FALSE}
-pprob.y <- join_ml$`Predicted Probability.y`
-skim(pprob.y) %>% pander()
+```{r, message=FALSE, warning=FALSE}
+
+# pprob.y <- join_ml$`Predicted Probability.y`
+# skim(pprob.y) %>% pander()
+
 ```
 
 
 &nbsp;
 
 
-No, 0 missings. So we can start simulation.
+Perfect! Nothing (0) is missing. So we can start simulation.
 
 
-```{r, cache = TRUE}
-sim_ml_prob <- pvalDist(pvec = join_ml$`Predicted Probability.y`,
-                         valvec = join_ml$`Amount USD`,
+```{r, message=FALSE, cache = TRUE}
+
+sim_ml_prob <- pvalDist(pvec = actual$`Predicted Probability`,
+                         valvec = actual$`Amount USD`,
                          rep = 10000,
                          parallel = TRUE)
+
 ```
+
+
+Summary statistics of simulated Revenue Distribution using
+`Predicted Probability` (Machine Learning) probailities
+
+
+```{r, message=FALSE, warning=FALSE}
+
+skim(sim_ml_prob) %>% pander()
+
+```
+
+
+Histogram of simulated Revenue Distribution using
+`Predicted Probability` (Machine Learning) probailities
 
 
 ```{r, message = FALSE}
+
 plotdist(sim_ml_prob)
+
 ```
 
 
 &nbsp;
 
 
-### Concluson.
+### Intermediate conclusion.
 We haved proved upon simulation that existing Machine Learning Probabilities
 model has highest fidelity. As We can see based on 3 probabilities types,
 simulation mean of the one based on Machine learning are much closer to the
 acutal value. Which is:
 
+In case Contract Values per Opportinity won't change:
 
 ```{r}
-require(scales)
-scales::dollar(actual[wonnow == "1", sum(`Amount USD`)])
+
+scales::dollar(actual[now_IsWon == "1", sum(`Amount USD`)])
+
 ```
 
 
 &nbsp;
 
 
-Or could be in case Amounts per Opportinity won't change:
+In case Contract values change during lifetime:
 
 ```{r}
-scales::dollar(actual[wonnow == "1", sum(AmountUSDnow)])
+
+scales::dollar(actual[now_IsWon == "1", sum(now_AmountUSD)])
+
 ```
 
 
 \newpage
 
 
-## Extra Coefficient for Opportunity Amounts
+### Adding Extra Coefficient for Opportunity Amounts
 
 As seen previously there are lifetime changes in the amount values by 
 Opportunity. Which can be seen in dataset head below. `AmountUSD` represent
-amount of `Opportinity ID` on "2018-10-01", `AmountUSDnow` represent
+amount of `Opportinity ID` on "2018-10-01", `now_AmountUSD` represent
 "Amount USD" but up to date:
 
 
 ```{r}
-head(actual[, .(`Opportunity ID`, `Amount USD`, `AmountUSDnow`)])
+
+head(actual[, .(`Opportunity_ID`, `Amount USD`, `now_AmountUSD`)])
+
 ```
 
 
@@ -868,11 +996,13 @@ we'll download opportunities of "2018-10-01" from snapshot and filter those IDs
 finished as win up to date:
 
 
-```{r, won_oppos, message=FALSE, cache=TRUE}
-nowwd <- getwd()
-setwd("../../R_OPPO_PROB")
-won <- oppoJoinProbs(given_date = "2018-10-01", ended_as = "won")
-setwd(nowwd)
+```{r, won_oppos, message=FALSE, cache=FALSE}
+
+# nowwd <- getwd()
+# setwd("../../R_OPPO_PROB")
+won <- actual[now_IsWon == 1]
+# setwd(nowwd)
+
 ```
 
 
@@ -884,45 +1014,55 @@ Let's see how many obseravatons (IDs) from "2018-10-01" meets our criteria
 
 
 ```{r, nrow_won}
+
 nrow(won)
+
 ```
 
 
 &nbsp;
 
 
-For ease of `won` data exploration I'll narrow dataset keeping variables
-we are interested in: `Opportunity ID`, `Amount USD`, `AmountUSDnow` and name
+For ease of `won` data exploration I'll narrow dataset keeping only variables
+we are interested in: `Opportunity ID`, `Amount USD`, `now_AmountUSD` and name
 new dataest as `won.cln`. Let's view dataset head:
 
 
 ```{r, won_oppo_cln}
-head(won.cln <- won[, .(`Opportunity ID`, `Amount USD`, `AmountUSDnow`)])
+
+head(won.cln <- won[, .(`Opportunity_ID`, `Amount USD`, `now_AmountUSD`)])
+
 ```
 
 
 &nbsp;
 
 
-Before calculatin difference, let's see investigate initial values
-(`Amount USD`) precisely:
+Before calculatin difference, let's investigate initial values of
+`Amount USD` variable precisely:
+
 
 ```{r, message=FALSE}
+
 require(ggplot2)
 qplot(x = won.cln$`Amount USD`, geom = "histogram")
+
 ```
 
 
 &nbsp;
 
 
-Amount USD values distribution is very strongly right skewed since there are
-outlier(s) above 2 Mlns.
-Also mode is around zero which requires detailed investigation for errors.
-Let's see obseravations where `Amount USD` is less then, say 5000:
+`Amount USD` values distribution is very strongly right skewed since there are
+outlier(s) with values above $2 Mlns.  
+Also since mode value is around zero which requires detailed investigation for
+errors. Let's see obseravations where `Amount USD` is less then, say 5000:
+
 
 ```{r}
+
 won.cln[`Amount USD` < 5000]
+
 ```
 
 
@@ -931,12 +1071,16 @@ won.cln[`Amount USD` < 5000]
 
 There are totally `r nrow(won.cln["Amount USD" < 5000])` obseravations where
 `Amount USD` is below 5000. We can see above there one value = 1 among them 
-which have the same meaning as = 0 so I'll replace all 1 with 0:
+which have the same meaning as = 0 so I'll replace all 1 with 0 since it have
+idenical meaning:
+
 
 ```{r}
+
 won.cln[`Amount USD` == 1, `Amount USD` := 0]
-won.cln[`AmountUSDnow` == 1, `AmountUSDnow` := 0]
+won.cln[`now_AmountUSD` == 1, `now_AmountUSD` := 0]
 won.cln[`Amount USD` < 5000]
+
 ```
 
 
@@ -949,6 +1093,7 @@ simulation. Function Code:
 
 
 ```{r, coef_calc}
+
 diffCoef <- function(begin_num,
                         compl_num,
                         na.rm = FALSE,
@@ -994,25 +1139,31 @@ diffCoef <- function(begin_num,
     stopifnot(is.numeric(coefs))
     return(coefs)
 }
+
 ```
 
 
 &nbsp;
 
 
-Coefficient calculation apply `(was - now) / was`
-(with 5% outliers cut from both sides), so negative coef is increase by the end
-and positive is increase (in percent):
+Coefficient calculation uses following formula: `(was - now) / was`
+(with 10% percentile outliers cut from both sides).
+Coefs meanings: negative coef is increase in the amount 
+by the end, positive is decrease (in percent).  
+
+Code:
 
 
-```{r}
+```{r, message=FALSE}
+
 won.coef <- won.cln[, diff_coef := diffCoef(begin_num = `Amount USD`,
-                                            compl_num = `AmountUSDnow`,
-                                            limit_quant_tails = 0.1)]
+                                            compl_num = `now_AmountUSD`,
+                                            limit_quant_tails = 0.05)]
 won.coef <- won.coef[!is.na(diff_coef)]
 head(won.coef, 20)
 qplot(x = won.coef$diff_coef, geom = "histogram", binwidth = 0.25,
       main = "Coefficients Distribution", xlab = "coeffieinct", ylab = "count")
+
 ```
 
 
@@ -1024,8 +1175,11 @@ changes (mode = 0, nost of the coefs are above 0)
 
 Now let's put these coefficients in a separate variable `coefs`
 
+
 ```{r}
+
 coefs <- won.coef$diff_coef
+
 ```
 
 
@@ -1033,9 +1187,11 @@ coefs <- won.coef$diff_coef
 
 
 In order to simulate changes in the amount we would randomly apply them to
-those cases that appeared as won in simulation.
+those cases that appeared as won in simulation:
 
-```{r}
+
+```{r, allsims, message=FALSE, cache=FALSE}
+
 sim_pp2 <- pvalDist(pvec = actual$`Probability %`,
                    valvec = actual$`Amount USD`,
                    rep = 10000,
@@ -1050,24 +1206,42 @@ sim_win_prob2 <- pvalDist(pvec = ful.win.prob,
                          coefs = coefs)
 
 
-sim_ml_prob2 <- pvalDist(pvec = join_ml$`Predicted Probability.y`,
-                         valvec = join_ml$`Amount USD`,
+sim_ml_prob2 <- pvalDist(pvec = actual$`Predicted Probability`,
+                         valvec = actual$`Amount USD`,
                          rep = 10000,
                          parallel = TRUE,
                          coefs = coefs)
+
+err <- actual$`Predicted Probability` - actual$now_IsWon
+
+sim_ml_prob3 <- pvalDist(pvec = actual$`Predicted Probability`,
+                         valvec = actual$`Amount USD`,
+                         rep = 100000,
+                         parallel = TRUE,
+                         coefs = coefs,
+                         error = TRUE)
+
+
 plotdist(sim_pp2)
 plotdist(sim_win_prob2)
 plotdist(sim_ml_prob2)
 
+
 test1 <- data.table(simdist = c(sim_pp, sim_pp2),
-                   coef = c(rep(FALSE, length(sim_pp)), rep(TRUE, length(sim_pp2))),
+                   coef = c(rep(FALSE, length(sim_pp)),
+                            rep(TRUE, length(sim_pp2))),
                    Prob_Type = "Probability %")
+
 test2 <- data.table(simdist = c(sim_win_prob, sim_win_prob2),
-                   coef = c(rep(FALSE, length(sim_win_prob)), rep(TRUE, length(sim_win_prob2))),
+                   coef = c(rep(FALSE, length(sim_win_prob)),
+                            rep(TRUE, length(sim_win_prob2))),
                    Prob_Type = "Winning Probabilities")
+
 test3 <- data.table(simdist = c(sim_ml_prob, sim_ml_prob2),
-                   coef = c(rep(FALSE, length(sim_ml_prob)), rep(TRUE, length(sim_ml_prob2))),
+                   coef = c(rep(FALSE, length(sim_ml_prob)),
+                            rep(TRUE, length(sim_ml_prob2))),
                    Prob_Type = "Machine Learning")
+
 test <- rbind(test1,test2,test3)
 
 
@@ -1078,12 +1252,21 @@ test <- rbind(test1,test2,test3)
 
 
 Recall - actual value is (won opportunities) is
-`r round(actual[wonnow == "1", sum(AmountUSDnow)])`
+`r round(actual[now_IsWon == "1", sum(now_AmountUSD)])`
 
-```{r, plot_dens, echo=FALSE}
-head(sim_pp2)
 
-act.rev <- actual[wonnow == "1", sum(AmountUSDnow)]
+&nbsp;
+
+
+Revenue Distributions with and without coefficient by Probability types:
+
+
+```{r, plot_dens, echo=FALSE, message=FALSE, cache=TRUE}
+
+require(forcats)
+
+act.rev <- actual[now_IsWon == "1", sum(now_AmountUSD)]
+
 test %>% 
     mutate(coef = coef %>% as.character() %>% forcats::as_factor() %>% forcats::fct_rev()) %>% 
     as_tibble() %>% 
@@ -1092,49 +1275,512 @@ test %>%
     scale_x_continuous(labels = dollar_format(scale = 1e-6, suffix = "K"),
                        breaks = scales::pretty_breaks(10)) +
     scale_fill_viridis_d(option = "B") +
-    geom_vline(aes(xintercept = act.rev), linetype = 3, size = 2) +
-    # geom_text(aes(x = act.rev, y = 0),
-    #               label = paste("Actual\n", act.rev), color = "black",
-    #               size = 3, angle = 90, vjust = 1.5, hjust = -0.5) +
-    expand_limits(0, 0) +
-    xlab("Revenue") +
-    ylab("Density") +
+    geom_vline(aes(xintercept = act.rev), linetype = "solid", size = 1, color = "black") +
+    expand_limits(x = c(0, 0)) +
     labs(title = "Revenue Distribution Simulation",
          subtitle = "probabilities source comparison",
          fill = "Coefficients Applied",
-         caption = paste0("Actual Revenue: ", dollar(round(act.rev)))) +
-    # theme(legend.position = c(0.9, 0.9)) +
+         caption = paste0("Actual Revenue: ", dollar(round(act.rev))),
+         x = "Revenue",
+         y = "Density") +
+    theme(legend.position = c(0.9, 0.9)) +
     theme_minimal() +
     theme(legend.position = "right") +
     facet_wrap(~ Prob_Type, ncol = 1)
+
 ```
 
 
 &nbsp;
 
 
-```{r, plot_dens_coef, echo = FALSE}
-test %>%
-    filter(coef == TRUE) %>% 
-    ggplot(aes(x = simdist, fill = Prob_Type)) +
-    geom_density(alpha = 0.5, position = "identity") +
-        scale_x_continuous(labels = dollar_format(scale = 1e-6, suffix = "K"),
-                       breaks = scales::pretty_breaks(10)) +
-    scale_fill_viridis_d(option = "C") +
-    geom_vline(aes(xintercept = act.rev), linetype = 3, size = 2) +
-    geom_text(aes(x = act.rev, y = 0),
-                  label = "Actual Revenue",
-              color = "black",
-              size = 4, angle = 90, vjust = 1.5, hjust = -0.5) +
-    expand_limits(0, 0) +
-    xlab("Revenue") +
-    ylab("Density") +
-    labs(title = "Revenue Distribution Simulation",
-         subtitle = "probabilities source comparison",
-         fill = "Probability Source",
-         caption = paste0("Actual Revenue: ", dollar(round(act.rev)))) +
-    # theme(legend.position = c(0.9, 0.9)) +
-    theme_minimal() +
-    theme(legend.position = "bottom")
+Revenue Distribution Comparison with changes coefs applied:
+
+
+```{r, plot_dens_coef, echo = FALSE, message=FALSE, cache = TRUE}
+
+densIdentPlot <- function(data, x, fill, suffix = "") {
+        data %>%
+            # filter(coef == TRUE) %>% 
+            ggplot(aes_string(x = x, fill = fill)) +
+            geom_density(alpha = 0.5, position = "identity") +
+            scale_x_continuous(labels = dollar_format(scale = 1e-6,
+                                                      suffix = suffix),
+                               breaks = scales::pretty_breaks(10)) +
+            scale_fill_viridis_d(option = "C") +
+            expand_limits(x = c(0, 0)) +
+            labs(title = "Revenue Distribution Simulation",
+                 subtitle = "probabilities source comparison",
+                 fill = "Probability Source",
+                 x = "Revenue",
+                 y = "Density") +
+            theme_minimal() +
+            theme(legend.position = "bottom")
+}
+
+
+dip <- densIdentPlot(data = test %>% filter(coef == TRUE),
+              x = "simdist", fill = "Prob_Type", suffix = "M")
+
+dip + 
+  geom_text(aes(x = act.rev, y = 0),
+    label = "Actual Revenue",
+    color = "black",
+    size = 4,
+    angle = 90,
+    vjust = 1.5,
+    hjust = -0.5) +
+  geom_vline(xintercept = act.rev, linetype = "solid", size = 1, color = "black") +
+  labs(caption = paste0("Actual Revenue: ", dollar(round(act.rev))))
+
 ```
+
+
+### Conclusion
+
+
+Each of Revenue Distributions catches the real Revenue.   
+However simulations upon - `Probability %` & `Winning_Probability` probabilities
+catches it at the edge of distributions which tells that these probabilities are
+overestimated (too positive).  
+
+
+On the other hand `Predicted Probability` which is `Machine Learning`
+("hand made") catches the actual Revenue near the mode (the most frequent
+bin) which is a very good sign of these probabilities are being accurate thou is
+the best choice to rely on for simulation of Revenue Distribution relative to
+the other available options.  
+
+## Forecast on Revenue Distribution upon existing open Opportunities.
+### Source Data Retrieve:
+
+
+```{r, message=FALSE, cache = TRUE}
+
+source("../../R_OPPO_PROB/_oppoLastWeekly.R", local = TRUE)
+setwd("../../R_OPPO_PROB")
+l.opps <- oppoLastWeekly()
+
+```
+filtering not-closed Opportunities
+```{r}
+
+lst.open <- l.opps[IsClosed == 0]
+
+```
+
+Leaving only IDs and probabilities:
+```{r}
+
+lst.probs <- lst.open[, .(`Opportunity ID`, `Probability %`, 
+             Winning_Probability, `Predicted Probability`, `Amount USD`)]
+
+```
+
+
+```{r}
+# skim(lst.probs)
+```
+
+
+Replacing NAs in `Predicted Probability` & `Winning_Probability` 
+w/`Probability %`
+
+
+```{r}
+
+require(dplyr)
+lst.probs$`Predicted Probability` <- 
+    case_when(
+        is.na(lst.probs$`Predicted Probability`) ~ lst.probs$`Probability %`,
+        TRUE ~ lst.probs$`Predicted Probability`)
+
+lst.probs$Winning_Probability <- 
+    case_when(
+        is.na(lst.probs$Winning_Probability) ~ lst.probs$`Probability %`,
+        TRUE ~ lst.probs$Winning_Probability)
+# skim(lst.probs)
+
+```
+
+Simulating future Revenue Distribution upon open Opportunaties:
+```{r, cache = TRUE}
+
+sim_pp3 <- pvalDist(pvec = lst.probs$`Probability %`,
+                   valvec = lst.probs$`Amount USD`,
+                   rep = 10000,
+                   parallel = TRUE,
+                   coefs = coefs)
+
+
+sim_win_prob3 <- pvalDist(pvec = lst.probs$Winning_Probability,
+                         valvec = lst.probs$`Amount USD`,
+                         rep = 10000,
+                         parallel = TRUE,
+                         coefs = coefs)
+
+
+sim_ml_prob3 <- pvalDist(pvec = lst.probs$`Predicted Probability`,
+                         valvec = lst.probs$`Amount USD`,
+                         rep = 10000,
+                         parallel = TRUE,
+                         coefs = coefs)
+
+```
+
+Gathering simulations on different probabilities into single dataset
+```{r, cache = TRUE}
+
+dtFromSims <- function(vecs_list, names) {
+        require(tidyr)
+        stopifnot(length(vecs_list) == length(names))
+        names(vecs_list) <- names
+        return(gather(as.data.table(vecs_list)))
+}
+
+f.sim <- dtFromSims(list(sim_pp3, sim_win_prob3, sim_ml_prob3),
+                    c("Probability %", "Winning_Probability",
+                      "Predicted Probability"))
+
+```
+
+
+
+Ploting Future Revenue Distribution Simulation:
+```{r}
+
+densIdentPlot(f.sim, x = "value", fill = "key", suffix = "M")
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+# Distribution comparison for Opportunities on 2019-04-01:
+
+```{r, oppos0401, message = FALSE, echo = FALSE, cache = TRUE}
+
+setwd("../../R_OPPO_PROB")
+d2019_04_01 <- probGiveInLast(given_date = "2019-04-01")
+
+```
+
+
+```{r, echo = FALSE}
+
+d2019_04_01sl <- d2019_04_01[, c("Opportunity_ID",
+                                 "Probability %",
+                                 "Winning_Probability",
+                                 "Probability_Of_Success",
+                                 "Predicted Probability",
+                                 "now_IsWon",
+                                 "Amount USD",
+                                 "now_AmountUSD")]
+
+```
+
+```{r, sim20190401, echo = FALSE, cache = TRUE}
+
+sim_941_p <- pvalDist(pvec = d2019_04_01sl$`Probability %`,
+                      valvec = d2019_04_01sl$`Amount USD`,
+                      rep = 10000,
+                      coefs = coefs,
+                      parallel = TRUE)
+
+sim_941_w <- pvalDist(pvec = d2019_04_01sl$Winning_Probability,
+                      valvec = d2019_04_01sl$`Amount USD`,
+                      rep = 10000,
+                      coefs = coefs,
+                      parallel = TRUE)
+
+sim_941_m <- pvalDist(pvec = d2019_04_01sl$`Predicted Probability`,
+                      valvec = d2019_04_01sl$`Amount USD`,
+                      rep = 10000,
+                      coefs = coefs,
+                      parallel = TRUE)
+
+skim(sim_941_m)
+
+```
+
+
+
+
+
+## Actual Value
+```{r}
+print(act.rev190401 <- sum(d2019_04_01sl[now_IsWon == 1]$now_AmountUSD))
+# skim(d2019_04_01sl) %>% pander()
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+## Plot 2019-04-01 distributions.
+```{r, echo = FALSE, cache = TRUE}
+
+f.sim190401 <- dtFromSims(list(sim_941_p, sim_941_w, sim_941_m),
+                    c("Probability %", "Winning_Probability",
+                      "Predicted Probability"))
+
+densIdentPlot(f.sim190401, x = "value", fill = "key", suffix = "M") +
+    geom_text(aes(x = act.rev190401, y = 0),
+    label = "actual revenue",
+    color = "black",
+    size = 4,
+    angle = 90,
+    vjust = -0.25,
+    hjust = -0.8) +
+  geom_vline(xintercept = act.rev190401, linetype = "dashed", size = 1, color = "black") +
+  labs(caption = paste0("Actual Revenue: ", dollar(round(act.rev190401))),
+       ylab = NULL)
+```
+
+
+
+
+
+# SIMULATING FINLOB ONLY FROM 2019-04-01
+
+```{r, finlob_sim_941, cache = TRUE}
+d190401_finlob <- d2019_04_01[`Opportunity LOB` == "FIN LOB"]
+d190401_finlob <- d190401_finlob[, c("Opportunity_ID",
+                                     "Probability %",
+                                     "Winning_Probability",
+                                     "Probability_Of_Success",
+                                     "Predicted Probability",
+                                     "now_IsWon",
+                                     "Amount USD",
+                                     "now_AmountUSD")]
+
+print(act.revfinlob190401 <- sum(d190401_finlob[now_IsWon == 1]$now_AmountUSD))
+
+sim_941_finlob_p <- pvalDist(pvec = d190401_finlob$`Probability %`,
+                      valvec = d190401_finlob$`Amount USD`,
+                      rep = 10000,
+                      coefs = coefs,
+                      parallel = TRUE)
+
+sim_941_finlob_w <- pvalDist(pvec = d190401_finlob$Winning_Probability,
+                      valvec = d190401_finlob$`Amount USD`,
+                      rep = 10000,
+                      coefs = coefs,
+                      parallel = TRUE)
+
+sim_941_finlob_m <- pvalDist(pvec = d190401_finlob$`Predicted Probability`,
+                      valvec = d190401_finlob$`Amount USD`,
+                      rep = 10000,
+                      coefs = coefs,
+                      parallel = TRUE)
+
+
+
+f_sim190401_finlob <- dtFromSims(list(sim_941_finlob_p,
+                                      sim_941_finlob_w,
+                                      sim_941_finlob_m),
+                    c("Probability %", "Winning_Probability",
+                      "Predicted Probability"))
+
+densIdentPlot(f_sim190401_finlob, x = "value", fill = "key", suffix = "M") +
+    geom_text(aes(x = act.revfinlob190401, y = 0),
+    label = "Actual Revenue",
+    color = "black",
+    size = 4,
+    angle = 90,
+    vjust = 1.5,
+    hjust = -0.5) +
+  geom_vline(xintercept = act.revfinlob190401, linetype = "solid", size = 1, color = "black") +
+  labs(caption = paste0("Actual Revenue: ", dollar(round(act.revfinlob190401))))
+
+# names(d2019_04_01)
+# d190401_finlob
+```
+
+
+
+
+
+
+
+
+
+
+
+# Simulating particular client. Say Daimler.
+```{r, sim_daimler, cache = TRUE}
+sort(unique(d2019_04_01$`Account Name`))
+daimler.190401 <- d2019_04_01[`Account Name` == "Commonwealth Bank of Australia"]
+
+daimler.190401 <- daimler.190401[, c("Opportunity_ID",
+                                     "Probability %",
+                                     "Winning_Probability",
+                                     "Probability_Of_Success",
+                                     "Predicted Probability",
+                                     "now_IsWon",
+                                     "Amount USD",
+                                     "now_AmountUSD")]
+
+print(actrev_daimler.190401 <- sum(daimler.190401[now_IsWon == 1]$now_AmountUSD))
+
+sim_941_daimler_p <- pvalDist(pvec = daimler.190401$`Probability %`,
+                      valvec = daimler.190401$`Amount USD`,
+                      rep = 10000,
+                      coefs = coefs,
+                      parallel = TRUE)
+
+sim_941_daimler_w <- pvalDist(pvec = daimler.190401$Winning_Probability,
+                      valvec = daimler.190401$`Amount USD`,
+                      rep = 10000,
+                      coefs = coefs,
+                      parallel = TRUE)
+
+sim_941_daimler_m <- pvalDist(pvec = daimler.190401$`Predicted Probability`,
+                      valvec = daimler.190401$`Amount USD`,
+                      rep = 10000,
+                      coefs = coefs,
+                      parallel = TRUE)
+
+
+
+f_sim190401_daimler <- dtFromSims(list(sim_941_daimler_p,
+                                      sim_941_daimler_w,
+                                      sim_941_daimler_m),
+                    c("Probability %", "Winning_Probability",
+                      "Predicted Probability"))
+
+densIdentPlot(f_sim190401_daimler, x = "value", fill = "key", suffix = "M") +
+    geom_text(aes(x = actrev_daimler.190401, y = 0),
+    label = "Actual Revenue",
+    color = "black",
+    size = 4,
+    angle = 90,
+    vjust = 1.5,
+    hjust = -0.5) +
+  geom_vline(xintercept = actrev_daimler.190401, linetype = "solid", size = 1, color = "black") +
+  labs(caption = paste0("Actual Revenue: ", dollar(round(actrev_daimler.190401))))
+
+# names(d2019_04_01)
+# d190401_finlob
+
+# sort(unique(d2019_04_01$`Account Name`))
+
+d2019_04_01[`Account Name` == "Commonwealth Bank of Australia"]
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+```{r, cache = TRUE}
+
+source("../../R_OPPO_PROB/_oppoProb.R")
+setwd("../../R_OPPO_PROB")
+ml_941 <- oppoProb(given_date = "2019-04-01")
+
+```
+
+```{r, cache = TRUE}
+
+d2019_04_01sl[, `Predicted Probability` := NULL]
+lj_941c <- setDT(left_join(d2019_04_01sl, ml_941[, c("Opportunity_ID", "Probability")], by = c("Opportunity_ID" = "Opportunity_ID")))
+lj_941 <- copy(lj_941c)
+
+lj_941$Probability <- case_when(is.na(lj_941$Probability) ~ lj_941$`Probability %`,
+                                TRUE ~ lj_941$Probability)
+
+sim_941_m2 <- pvalDist(pvec = lj_941$Probability,
+                       valvec = lj_941$`Amount USD`,
+                       rep = 10000,
+                       coefs = coefs,
+                       parallel = TRUE)
+
+skim(sim_941_m2)
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+# Residuals.
+
+Since probability is the estimation. We need to simualte error variance.
+We'll take the difference between probability & actual outcome to have a thougth
+on the error estimation.
+
+```{r, cache = TRUE}
+# glimpse(data20181001)
+d <- copy(data20181001)
+pp.res <- d$`Predicted Probability` - d$now_IsWon
+sf.res <- d$`Probability %` - d$now_IsWon
+wp.res <- d$Winning_Probability - d$now_IsWon
+skim(as.data.table(cbind(pp.res, sf.res, wp.res)))
+```
+
+Random apply this error coefficient to probabilities.
+
+```{r}
+
+applyErr <- function(p, err) {
+  
+        require(dplyr)
+        stopifnot(length(p) == 1L)
+        xp <- p + (p * sample(err, size = length(p), replace = TRUE))
+        xp <- case_when(xp < 0L ~ 0,
+                        xp > 1L ~ 1,
+                        TRUE ~ xp)
+        return(xp)
+  
+}
+
+sim_err_pp <- pvalDist(pvec     = lj_941$Probability,
+                       valvec   = lj_941$`Amount USD`,
+                       rep      = 10000,
+                       coefs    = coefs,
+                       parallel = TRUE)
+
+
+
+```
+
 

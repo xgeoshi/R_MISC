@@ -1,0 +1,170 @@
+---
+title: "Assess Forecast of Opportunity's Probability of Success"
+# mainfont: DejaVu Sans
+output:
+  pdf_document:
+    # toc: true
+    df_print: kable
+    toc_depth: 4
+    # number_sections: true
+---
+
+<!-- Data to explore: -->
+
+```{r setup,  cache = TRUE, echo = FALSE, message = FALSE}
+wd <- getwd()
+setwd("../R_OPPO_PROB")
+source("../R_OPPO_PROB/_probGiveInLast.R", local = TRUE)
+gd <- "2018-10-01"
+data <- probGiveInLast(given_date = gd)
+```
+
+```{r, transform, cache = FALSE, echo = FALSE, message = FALSE}
+require(data.table)
+require(tidyr)
+require(dplyr)
+
+prob <- data[, .(Opportunity_ID,
+                 `Predicted Probability`,
+                 `Probability %`,
+                 Winning_Probability,
+                 # IsClosed,
+                 # IsWon,
+                 # now_IsClosed,
+                 now_IsWon)]
+
+p4plot <- gather(prob, key = "prob_type", value = "probability",
+                 `Predicted Probability`,
+                 "Winning_Probability",
+                 "Probability %")
+
+setDT(p4plot)
+
+p4plot[, prob_type := case_when(prob_type %chin% "Predicted Probability" ~ "Machine Learning",
+                                prob_type %chin% "Probability %" ~ "Sales Force CRM",
+                                prob_type %chin% "Winning_Probability" ~ "Project Manager",
+                                TRUE ~ "Other")]
+
+```
+
+
+Based on `r gd` Open Opportunities relative to it's actual outcomes\
+
+
+  
+```{r, echo = FALSE, fig.height = 3.5, message = FALSE}
+
+require(ggplot2)
+require(ggthemes)
+require(data.table)
+require(dplyr)
+
+ggplot(data = p4plot, aes(x = prob_type, y = probability, fill = prob_type)) +
+        geom_boxplot(alpha = 0.99, outlier.shape = 20) +
+        facet_wrap(~ case_when(now_IsWon == 0 ~ "LOST",
+                               now_IsWon == 1 ~ "WON",
+                               TRUE ~ "NA")) +
+        theme_bw() +
+        # ggthemes::theme_hc()
+        # xlab(NULL) +
+        # theme_bw()
+        theme(axis.title.x = element_blank(),
+              axis.text.x  = element_blank(),
+              axis.ticks.x = element_blank(),
+              legend.title = element_blank(),
+              legend.position = "top",
+              legend.margin = margin(0,0,0,0),
+              legend.box.margin = margin(-7,-7,-7,-7)) +
+        scale_fill_brewer(type = "qual", palette = 7, direction = 1) +
+                labs(
+             # subtitle = "Based on 2018-10-01 Open Opportunities") +
+             caption = paste0("Total Opportunity IDs: ",
+             uniqueN(p4plot$Opportunity_ID)))
+# scale_fill_brewer()
+
+        # geom_jitter(alpha = .02, size = 4, width = 0.01, height = 0.2)
+```
+*Legend annotation:*\
+> `Machine Learning` - is my Machine Learning model stored in SQL as **`Predicted Probability`** field.\
+> `Sales Force CRM` - SalesForce Automated Probabilities stored in SQL as **`Probability %`** field.\
+> `Project Manager` - Account Manager's best guess stored in SQL as  **`Winning Probability`** field.\
+
+  
+\   
+
+```{r, message = FALSE, echo = FALSE}
+require(data.table)
+require(dplyr)
+require(knitr)
+require(kableExtra)
+p4plot <- as.data.table(p4plot)
+
+pcast <- p4plot[, .("Mean Probabilty" = round(mean(probability), 2),
+                    "Median Probabilty" = round(median(probability), 2)),
+       by = .("PROBABILITY SOURCE" = prob_type,
+              "now_IsWon" = case_when(now_IsWon == 0 ~ "LOST",
+                                      now_IsWon == 1 ~ "WON",
+                                      TRUE ~ "OTHER"))]
+
+```
+
+
+  
+\  
+  
+
+
+Median Summary Statistics:
+```{r, message = FALSE, echo = FALSE}
+require(data.table)
+require(dplyr)
+as_tibble(dcast(pcast, `PROBABILITY SOURCE` ~ now_IsWon,
+                value.var = "Median Probabilty")) %>% 
+                  kable() %>%
+  kable_styling(full_width = T, bootstrap_options = "striped") %>% 
+        column_spec(1, bold = T)
+```
+
+
+  
+\  
+  
+    
+    
+    
+\  
+
+
+Mean Summary Statistics:
+
+```{r, message = FALSE, echo = FALSE}
+as_tibble(dcast(pcast, `PROBABILITY SOURCE` ~ now_IsWon, value.var = "Mean Probabilty")) %>% 
+          kable() %>%
+  kable_styling(full_width = T, bootstrap_options = "striped") %>% 
+        column_spec(1, bold = T)
+```
+
+
+
+```{r, echo = FALSE, message = FALSE, fig.height = 7}
+require(ggplot2)
+require(data.table)
+require(ggthemes)
+ggplot(data = p4plot, aes(x = probability,
+                          y = case_when(now_IsWon == 0 ~ "LOST",
+                                        now_IsWon == 1 ~ "WON",
+                                        TRUE ~ "NA"),
+                          color = prob_type)) +
+        geom_jitter(alpha = .10, width = .04, height = 0.15, size = 3, color = "black") +
+        # geom_boxplot() +
+        facet_wrap(~ prob_type , ncol = 1) +
+        ylab("Actual Outcome") +
+        xlab("Probability Forecast") +
+        scale_color_brewer(type = "qual", palette = 7, direction = 1) +
+        theme_bw() +
+        theme(legend.position = "none")
+
+```
+
+
+

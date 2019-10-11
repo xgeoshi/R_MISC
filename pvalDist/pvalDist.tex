@@ -1,0 +1,2757 @@
+\documentclass[]{article}
+\usepackage{lmodern}
+\usepackage{amssymb,amsmath}
+\usepackage{ifxetex,ifluatex}
+\usepackage{fixltx2e} % provides \textsubscript
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+\else % if luatex or xelatex
+  \ifxetex
+    \usepackage{mathspec}
+  \else
+    \usepackage{fontspec}
+  \fi
+  \defaultfontfeatures{Ligatures=TeX,Scale=MatchLowercase}
+\fi
+% use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+% use microtype if available
+\IfFileExists{microtype.sty}{%
+\usepackage{microtype}
+\UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\usepackage[margin=1in]{geometry}
+\usepackage{hyperref}
+\hypersetup{unicode=true,
+            pdftitle={Simulation of Revenue Distribution in R language. Process Reveal.},
+            pdfborder={0 0 0},
+            breaklinks=true}
+\urlstyle{same}  % don't use monospace font for urls
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\usepackage{framed}
+\definecolor{shadecolor}{RGB}{248,248,248}
+\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.94,0.16,0.16}{#1}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.77,0.63,0.00}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\BuiltInTok}[1]{#1}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.64,0.00,0.00}{\textbf{#1}}}
+\newcommand{\ExtensionTok}[1]{#1}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ImportTok}[1]{#1}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{#1}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\RegionMarkerTok}[1]{#1}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\usepackage{longtable,booktabs}
+\usepackage{graphicx,grffile}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+\IfFileExists{parskip.sty}{%
+\usepackage{parskip}
+}{% else
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt plus 2pt minus 1pt}
+}
+\setlength{\emergencystretch}{3em}  % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{0}
+% Redefines (sub)paragraphs to behave more like sections
+\ifx\paragraph\undefined\else
+\let\oldparagraph\paragraph
+\renewcommand{\paragraph}[1]{\oldparagraph{#1}\mbox{}}
+\fi
+\ifx\subparagraph\undefined\else
+\let\oldsubparagraph\subparagraph
+\renewcommand{\subparagraph}[1]{\oldsubparagraph{#1}\mbox{}}
+\fi
+
+%%% Use protect on footnotes to avoid problems with footnotes in titles
+\let\rmarkdownfootnote\footnote%
+\def\footnote{\protect\rmarkdownfootnote}
+
+%%% Change title format to be more compact
+\usepackage{titling}
+
+% Create subtitle command for use in maketitle
+\providecommand{\subtitle}[1]{
+  \posttitle{
+    \begin{center}\large#1\end{center}
+    }
+}
+
+\setlength{\droptitle}{-2em}
+
+  \title{Simulation of Revenue Distribution in R language. Process Reveal.}
+    \pretitle{\vspace{\droptitle}\centering\huge}
+  \posttitle{\par}
+    \author{}
+    \preauthor{}\postauthor{}
+    \date{}
+    \predate{}\postdate{}
+  
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{wrapfig}
+\usepackage{float}
+\usepackage{colortbl}
+\usepackage{pdflscape}
+\usepackage{tabu}
+\usepackage{threeparttable}
+\usepackage{threeparttablex}
+\usepackage[normalem]{ulem}
+\usepackage{makecell}
+\usepackage{xcolor}
+
+\begin{document}
+\maketitle
+
+{
+\setcounter{tocdepth}{4}
+\tableofcontents
+}
+~
+
+\hypertarget{intro.}{%
+\subsection{Intro.}\label{intro.}}
+
+Description of the algorithm simulating total Revenue (Revenue
+Distribution) upon given Opportunities, their amounts and the prediction
+of the probability of winning.
+
+In the heart of the simulation is the sum of outcomes of Bernoulli
+trials (or binomial trial) which is a random experiment with exactly two
+possible outcomes per Opportunity case, ``success'' or ``failure'',
+where the probability of success is the near the same (every time the
+experiment is conducted within hundreds thousand iteration.
+
+\hypertarget{generate-small-random-dataset-to-start-with.}{%
+\subsection{Generate small random dataset to start
+with.}\label{generate-small-random-dataset-to-start-with.}}
+
+\hypertarget{why-using-small-dataset}{%
+\subsubsection{Why using small dataset}\label{why-using-small-dataset}}
+
+In order to make it easier to understand how the full cycle of
+simulation works and what results it leads to, I apply it to
+artificially created small dataset:
+
+\hypertarget{data-exploration}{%
+\subsubsection{Data exploration}\label{data-exploration}}
+
+Simulated data source have size of 3 columns \& 9 rows.
+
+3 columns:
+
+\begin{itemize}
+\tightlist
+\item
+  \texttt{case\ id} - simulated case id number
+\item
+  \texttt{prob} - success probability of e.g.~Opportunity
+\item
+  \texttt{revenue} - revenue amount per Opportunity
+\end{itemize}
+
+9 rows:
+
+\begin{itemize}
+\tightlist
+\item
+  9 cases
+\end{itemize}
+
+Let's have a look on a small dataset in table format:
+
+\begin{longtable}[]{@{}lrr@{}}
+\toprule
+case & prob & revenue\tabularnewline
+\midrule
+\endhead
+case1 & 0.8500 & 15000\tabularnewline
+case2 & 0.2345 & 10000\tabularnewline
+case3 & 0.0555 & 5000\tabularnewline
+case4 & 0.0010 & 5000\tabularnewline
+case5 & 0.3500 & 7000\tabularnewline
+case6 & 0.1600 & 2000\tabularnewline
+case7 & 0.6800 & 3000\tabularnewline
+case8 & 0.4000 & 4000\tabularnewline
+case9 & 0.1200 & 1000\tabularnewline
+\bottomrule
+\end{longtable}
+
+\hypertarget{pipeline}{%
+\subsubsection{Pipeline:}\label{pipeline}}
+
+In order to create revenue distribution (simulations) we will go through
+the following steps:
+
+\begin{enumerate}
+\def\labelenumi{\alph{enumi})}
+\tightlist
+\item
+  Generate Probability Deviation Distribution for each of 9 case's
+  probability values
+\item
+  Simulate binary outcomes per case (success-failure) based on randomly
+  chosen single prob value per distribution from part a.
+\item
+  Sum binary outcomes multiplied by related contract Value. x 1Mln =
+  Simulated Revenue Distribution
+\end{enumerate}
+
+~
+
+\hypertarget{pipeline-part-1.-generate-probability-deviation-distribution}{%
+\paragraph{Pipeline: part 1. Generate Probability Deviation
+Distribution}\label{pipeline-part-1.-generate-probability-deviation-distribution}}
+
+Probability Deviation Distributions computed as a vector of certain
+length of zeroes and ones (\texttt{"Bernulli\ trials"}) with given
+probability of success. This is required to simulate variablity in
+probability prediction due to natural random chance.
+
+Let's have a look on a vector, say length = 25 with given 30\%
+probability of success.
+
+~
+
+Function Evaluation Output:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{set.seed}\NormalTok{(}\DecValTok{22}\NormalTok{)}
+\KeywordTok{print}\NormalTok{(bernulli_trial_}\DecValTok{1}\NormalTok{ <-}\StringTok{ }\KeywordTok{bernulli}\NormalTok{(}\DataTypeTok{success_p =} \FloatTok{0.30}\NormalTok{, }\DataTypeTok{length =} \DecValTok{25}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##  [1] 0 0 1 0 1 1 0 1 0 0 1 0 0 1 0 0 0 0 0 0 0 0 0 1 1
+\end{verbatim}
+
+~
+
+As we can see vector's mean value is near given 0.3 probability since
+it's randomly generated:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{mean}\NormalTok{(bernulli_trial_}\DecValTok{1}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 0.32
+\end{verbatim}
+
+~
+
+If we run same function again we would get slightly different result,
+since function is randomized over the mean and it should follow normal
+distribution if all the required conditions are met:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{set.seed}\NormalTok{(}\DecValTok{14}\NormalTok{)}
+\KeywordTok{print}\NormalTok{(bernulli_trial_}\DecValTok{2}\NormalTok{ <-}\StringTok{ }\KeywordTok{bernulli}\NormalTok{(}\DataTypeTok{success_p =} \FloatTok{0.30}\NormalTok{, }\DataTypeTok{length =} \DecValTok{25}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##  [1] 0 0 1 0 1 0 1 0 0 0 1 0 0 1 1 1 0 0 1 0 0 0 0 0 1
+\end{verbatim}
+
+~
+
+Check second vector mean value again:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{mean}\NormalTok{(bernulli_trial_}\DecValTok{2}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 0.36
+\end{verbatim}
+
+~
+
+Repeating this process = 10K times will be sufficient for our purposes
+of modeling normal distribution from the given value for each
+probability value.
+
+But before proceeding with that we need to make sure the length of the
+bernulli vector is sufficient to meet
+\texttt{10\ \textgreater{}\ success-failure} binomial model conditions
+required for near normal distribution.
+
+We perform a check up of the simulated vector of length 25 to be
+sufficient in case of given 30\% probability success, as follows:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{t}\NormalTok{(}\KeywordTok{c}\NormalTok{(}\StringTok{"25 * 0.3"}\NormalTok{ =}\StringTok{ }\FloatTok{0.3} \OperatorTok{*}\StringTok{ }\DecValTok{25}\NormalTok{, }\StringTok{"25 * 0.7"}\NormalTok{ =}\StringTok{ }\NormalTok{(}\DecValTok{1} \OperatorTok{-}\StringTok{ }\FloatTok{0.3}\NormalTok{) }\OperatorTok{*}\StringTok{ }\DecValTok{25}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##      25 * 0.3 25 * 0.7
+## [1,]      7.5     17.5
+\end{verbatim}
+
+~
+
+7.5 is less then \textgreater{} 10 necessary condition of successes so
+we need to set sufficient longer vector using the following equation:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{print}\NormalTok{(length_for_30p <-}\StringTok{ }\DecValTok{10} \OperatorTok{/}\StringTok{ }\KeywordTok{min}\NormalTok{(}\KeywordTok{c}\NormalTok{(}\DecValTok{1} \OperatorTok{-}\StringTok{ }\FloatTok{0.3}\NormalTok{, }\FloatTok{0.3}\NormalTok{)))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 33.33333
+\end{verbatim}
+
+~
+
+Let's check the sufficiency of the new vetor length \textgreater{} 10
+success condition:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{t}\NormalTok{(}\KeywordTok{c}\NormalTok{(}\StringTok{"0.3"}\NormalTok{ =}\StringTok{ }\NormalTok{length_for_30p }\OperatorTok{*}\StringTok{ }\FloatTok{0.3}\NormalTok{, }\StringTok{"0.7"}\NormalTok{ =}\StringTok{ }\NormalTok{length_for_30p }\OperatorTok{*}\StringTok{ }\NormalTok{(}\DecValTok{1} \OperatorTok{-}\StringTok{ }\FloatTok{0.3}\NormalTok{)))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##      0.3      0.7
+## [1,]  10 23.33333
+\end{verbatim}
+
+~
+
+Done. Moreover, Since It's an experiment we need to put all the
+Opportunities in the identical conditions while simulation, so we would
+have to take the longest suitable vector among all cases and apply it
+for every case.
+
+Identifying the longest of sufficient vectors as a proportion for length
+size (to be at least 10 success \& failures):
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# Minimum Length (for 10 Success-Failures binomial condition) ----}
+\NormalTok{min.tail <-}\StringTok{ }\KeywordTok{min}\NormalTok{(p, }\DecValTok{1} \OperatorTok{-}\StringTok{ }\NormalTok{p) }\CommentTok{# min value of all range of both heads and tails}
+\KeywordTok{print}\NormalTok{(min.len  <-}\StringTok{ }\KeywordTok{ceiling}\NormalTok{(}\DecValTok{10} \OperatorTok{/}\StringTok{ }\NormalTok{min.tail)) }\CommentTok{# min length to get 10 binom successes}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 10000
+\end{verbatim}
+
+~
+
+Below is the function that take vector of all probabilities as an
+argument and define required length of the vector for probabilities
+means simulation.
+
+Code:
+
+Check the contents of the vector \texttt{p}:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{print}\NormalTok{(p)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 0.8500 0.2345 0.0555 0.0010 0.3500 0.1600 0.6800 0.4000 0.1200
+\end{verbatim}
+
+~
+
+Applying vector \texttt{p} as an argument to the function written above:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{print}\NormalTok{(min.length <-}\StringTok{ }\KeywordTok{pMinLen}\NormalTok{(}\DataTypeTok{p =}\NormalTok{ p))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 0.001 minimum length for bernulli success-failure cond: 10000
+\end{verbatim}
+
+\begin{verbatim}
+## [1] 10000
+\end{verbatim}
+
+Now we need to create functions that creates distribustion of length
+given above for each probability we have and repeat the process given
+times.\\
+10K would be enough for our purposes.
+
+~
+
+Executing functions mentioned above to get probabilities random
+deviation distributions and viewing heading of the output list of
+values:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{require}\NormalTok{(data.table)}
+\KeywordTok{require}\NormalTok{(kableExtra)}
+\NormalTok{pmeandist <-}\StringTok{ }\KeywordTok{bernulliMeansDist}\NormalTok{(}\DataTypeTok{pvec =}\NormalTok{ src}\OperatorTok{$}\NormalTok{prob,}
+                               \DataTypeTok{rep =} \DecValTok{10000}\NormalTok{,}
+                               \DataTypeTok{each =} \OtherTok{FALSE}\NormalTok{,}
+                               \DataTypeTok{export =} \StringTok{"mtcars"}\NormalTok{)}
+\CommentTok{# str(pmeandist)}
+\KeywordTok{head}\NormalTok{(}\KeywordTok{as.data.table}\NormalTok{(pmeandist)) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{kable}\NormalTok{(}\DataTypeTok{format =} \StringTok{"latex"}\NormalTok{, }\DataTypeTok{booktabs =}\NormalTok{ T) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{kable_styling}\NormalTok{(}\DataTypeTok{latex_options =} \KeywordTok{c}\NormalTok{(}\StringTok{"striped"}\NormalTok{, }\StringTok{"scale_down"}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{table}[H]
+\centering
+\resizebox{\linewidth}{!}{
+\begin{tabular}{rrrrrrrrr}
+\toprule
+case1\_p0.85 & case2\_p0.2345 & case3\_p0.0555 & case4\_p0.001 & case5\_p0.35 & case6\_p0.16 & case7\_p0.68 & case8\_p0.4 & case9\_p0.12\\
+\midrule
+\rowcolor{gray!6}  0.8492 & 0.2364 & 0.0537 & 0.0013 & 0.3482 & 0.1611 & 0.6771 & 0.3970 & 0.1250\\
+0.8477 & 0.2384 & 0.0555 & 0.0013 & 0.3518 & 0.1590 & 0.6818 & 0.4008 & 0.1224\\
+\rowcolor{gray!6}  0.8492 & 0.2292 & 0.0557 & 0.0007 & 0.3508 & 0.1575 & 0.6828 & 0.3949 & 0.1178\\
+0.8568 & 0.2399 & 0.0562 & 0.0005 & 0.3477 & 0.1527 & 0.6761 & 0.3954 & 0.1187\\
+\rowcolor{gray!6}  0.8472 & 0.2319 & 0.0587 & 0.0007 & 0.3495 & 0.1591 & 0.6744 & 0.4069 & 0.1231\\
+\addlinespace
+0.8519 & 0.2360 & 0.0537 & 0.0008 & 0.3533 & 0.1544 & 0.6751 & 0.3988 & 0.1195\\
+\bottomrule
+\end{tabular}}
+\end{table}
+
+~
+
+Let's Plot histograms of Probability Deviations for every case we had:
+
+\includegraphics{pvalDist_files/figure-latex/plot_p_dists-1.pdf}
+
+\newpage
+
+\hypertarget{pipeline-part-2.-simulate-binary-outcome-per-case}{%
+\paragraph{Pipeline: part 2. Simulate binary outcome per
+case}\label{pipeline-part-2.-simulate-binary-outcome-per-case}}
+
+(success-failure outcome given success probability)
+
+Now we need to simulate binary oucomes upon simulated probabilities
+distrbutions.
+
+~
+
+Example of outcome after repeated running for x10 times:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{set.seed}\NormalTok{(}\DecValTok{2}\NormalTok{)}
+\KeywordTok{as.data.table}\NormalTok{(}\KeywordTok{replicate}\NormalTok{(}\DecValTok{10}\NormalTok{, }\KeywordTok{binarySim}\NormalTok{(pmeandist))) }\OperatorTok{%>%}\StringTok{ }\KeywordTok{kable}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{tabular}{r|r|r|r|r|r|r|r|r|r}
+\hline
+V1 & V2 & V3 & V4 & V5 & V6 & V7 & V8 & V9 & V10\\
+\hline
+1 & 1 & 1 & 1 & 1 & 1 & 1 & 1 & 0 & 1\\
+\hline
+0 & 1 & 0 & 0 & 0 & 0 & 1 & 1 & 0 & 0\\
+\hline
+0 & 0 & 0 & 1 & 0 & 0 & 0 & 0 & 0 & 0\\
+\hline
+0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0\\
+\hline
+0 & 0 & 0 & 0 & 1 & 0 & 0 & 1 & 0 & 1\\
+\hline
+0 & 0 & 0 & 0 & 1 & 0 & 0 & 0 & 0 & 0\\
+\hline
+0 & 0 & 1 & 1 & 1 & 1 & 1 & 0 & 1 & 1\\
+\hline
+0 & 0 & 0 & 0 & 1 & 0 & 1 & 0 & 1 & 0\\
+\hline
+0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0\\
+\hline
+\end{tabular}
+
+~
+
+\hypertarget{pipeline-part-3.-binary-outcomes-multiply-by-contract-value.}{%
+\paragraph{Pipeline: part 3. Binary outcomes multiply by contract
+Value.}\label{pipeline-part-3.-binary-outcomes-multiply-by-contract-value.}}
+
+Finaly we add everything up. We use 10000 simulated binary outcomes per
+each case, combine it with related Opportunity ID revenue and sum all
+values to have simulation of Total Revnue. And Repeat x10K Times.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# Apply each binary outcome to related revenue}
+\NormalTok{bernulliTimesVal <-}\StringTok{ }\ControlFlowTok{function}\NormalTok{(values, distr, }\DataTypeTok{coefs =} \OtherTok{NULL}\NormalTok{) \{}
+
+\NormalTok{        bin.sim <-}\StringTok{ }\KeywordTok{binarySim}\NormalTok{(}\DataTypeTok{distr.p =}\NormalTok{ distr)}
+        
+        \ControlFlowTok{if}\NormalTok{ (}\OperatorTok{!}\KeywordTok{is.null}\NormalTok{(coefs) }\OperatorTok{&&}\StringTok{ }\KeywordTok{any}\NormalTok{(bin.sim }\OperatorTok{==}\StringTok{ }\DecValTok{1}\NormalTok{)) \{}
+\NormalTok{                bin.ones.index <-}\StringTok{ }\KeywordTok{which}\NormalTok{(bin.sim }\OperatorTok{==}\StringTok{ }\DecValTok{1}\NormalTok{)}
+\NormalTok{                len.ones <-}\StringTok{ }\KeywordTok{length}\NormalTok{(values[bin.ones.index])}
+                
+\NormalTok{                smp.coef <-}\StringTok{ }\KeywordTok{sample}\NormalTok{(coefs, len.ones, }\DataTypeTok{replace =} \OtherTok{TRUE}\NormalTok{)}
+\NormalTok{                v <-}\StringTok{ }\NormalTok{values[bin.ones.index]}
+                \KeywordTok{stopifnot}\NormalTok{(}\KeywordTok{length}\NormalTok{(v) }\OperatorTok{==}\StringTok{ }\KeywordTok{length}\NormalTok{(smp.coef))}
+\NormalTok{                values[bin.ones.index] <-}\StringTok{ }\NormalTok{v }\OperatorTok{-}\StringTok{ }\NormalTok{(v }\OperatorTok{*}\StringTok{ }\NormalTok{smp.coef)}
+\NormalTok{        \}}
+        
+        \KeywordTok{return}\NormalTok{(}\KeywordTok{sum}\NormalTok{(values }\OperatorTok{*}\StringTok{ }\NormalTok{bin.sim))}
+
+\NormalTok{\}}
+
+
+\CommentTok{# SIMULATED TOTAL REVENUE DISTRIBUTION}
+\NormalTok{pvalDist <-}\StringTok{ }\ControlFlowTok{function}\NormalTok{(pvec,}
+\NormalTok{                     valvec,}
+                     \DataTypeTok{rep =} \DecValTok{10000}\NormalTok{,}
+\NormalTok{                     parallel,}
+                     \DataTypeTok{export =} \KeywordTok{c}\NormalTok{(}\StringTok{"bernulliTimesVal"}\NormalTok{, }\StringTok{"valvec"}\NormalTok{,}
+                                \StringTok{"pmeandist"}\NormalTok{, }\StringTok{"binarySim"}\NormalTok{, }\StringTok{"actual"}\NormalTok{, }\StringTok{"coefs"}\NormalTok{),}
+                     \DataTypeTok{coefs =} \OtherTok{NULL}\NormalTok{,}
+                     \DataTypeTok{error =} \OtherTok{FALSE}\NormalTok{) \{}
+        
+\NormalTok{        repl.args <-}\StringTok{ }\KeywordTok{list}\NormalTok{(}\DataTypeTok{n =}\NormalTok{ rep)}
+        
+        \ControlFlowTok{if}\NormalTok{ (parallel) \{}
+                \KeywordTok{require}\NormalTok{(future)}
+                \KeywordTok{require}\NormalTok{(doFuture)}
+                \KeywordTok{registerDoFuture}\NormalTok{()}
+                \KeywordTok{plan}\NormalTok{(multisession)}
+                
+                \KeywordTok{source}\NormalTok{(}\StringTok{"_parallelRep.R"}\NormalTok{, }\DataTypeTok{local =} \OtherTok{TRUE}\NormalTok{)}
+                \KeywordTok{message}\NormalTok{(}\StringTok{"<pvalDist> parallel"}\NormalTok{)}
+\NormalTok{                repl.args[[}\StringTok{"each"}\NormalTok{]] <-}\StringTok{ }\OtherTok{TRUE}
+\NormalTok{                repl.args[[}\StringTok{"export"}\NormalTok{]] <-}\StringTok{ }\NormalTok{export}
+\NormalTok{                replX <-}\StringTok{ }\NormalTok{parallelRep}
+                
+\NormalTok{        \} }\ControlFlowTok{else}\NormalTok{ \{}
+\NormalTok{                replX <-}\StringTok{ }\NormalTok{replicate}
+\NormalTok{        \}}
+        
+        \CommentTok{# Creating list of berbulli means distribution}
+\NormalTok{        pmeandist <-}\StringTok{ }\KeywordTok{bernulliMeansDist}\NormalTok{(}\DataTypeTok{pvec =}\NormalTok{ pvec, }\DataTypeTok{each =}\NormalTok{ parallel,}
+                                       \DataTypeTok{export =}\NormalTok{ export, }\DataTypeTok{error =}\NormalTok{ error)}
+        \KeywordTok{stopifnot}\NormalTok{(}\KeywordTok{identical}\NormalTok{(}\KeywordTok{length}\NormalTok{(pmeandist), }\KeywordTok{length}\NormalTok{(valvec), }\KeywordTok{length}\NormalTok{(pvec)))}
+        
+        \CommentTok{# Adding argument}
+\NormalTok{        repl.args[[}\StringTok{"expr"}\NormalTok{]] <-}\StringTok{ }\KeywordTok{quote}\NormalTok{(}\KeywordTok{bernulliTimesVal}\NormalTok{(}\DataTypeTok{values =}\NormalTok{ valvec,}
+                                                      \DataTypeTok{distr =}\NormalTok{ pmeandist,}
+                                                      \DataTypeTok{coefs =}\NormalTok{ coefs))}
+        
+        \CommentTok{# revenue simulations}
+\NormalTok{        rsim <-}\StringTok{ }\KeywordTok{do.call}\NormalTok{(replX, repl.args)}
+        
+        \KeywordTok{stopifnot}\NormalTok{(}\KeywordTok{length}\NormalTok{(rsim) }\OperatorTok{==}\StringTok{ }\NormalTok{rep)}
+        \KeywordTok{return}\NormalTok{(rsim)}
+\NormalTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{setwd}\NormalTok{(}\StringTok{"../pvalDist"}\NormalTok{)}
+\KeywordTok{set.seed}\NormalTok{(}\DecValTok{1}\NormalTok{)}
+\NormalTok{simdist <-}\StringTok{ }\KeywordTok{pvalDist}\NormalTok{(}\DataTypeTok{pvec     =}\NormalTok{ src}\OperatorTok{$}\NormalTok{prob,}
+                    \DataTypeTok{valvec   =}\NormalTok{ src}\OperatorTok{$}\NormalTok{revenue,}
+                    \DataTypeTok{rep      =} \DecValTok{10000}\NormalTok{,}
+                    \DataTypeTok{parallel =} \OtherTok{TRUE}\NormalTok{,}
+                    \DataTypeTok{error    =} \OtherTok{FALSE}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+Output head:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{str}\NormalTok{(simdist)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##  num [1:10000] 22000 28000 24000 25000 22000 26000 22000 24000 32000 22000 ...
+\end{verbatim}
+
+~
+
+Total Revenue Distribution Simulation Histogram:
+
+\begin{verbatim}
+## Loading required package: ggplot2
+\end{verbatim}
+
+\begin{verbatim}
+## Loading required package: scales
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{plotdist}\NormalTok{(}\DataTypeTok{simdist =}\NormalTok{ simdist)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{pvalDist_files/figure-latex/plotartif-1.pdf}
+
+\hypertarget{conclusion.}{%
+\subsubsection{Conclusion.}\label{conclusion.}}
+
+Mathematical Expectation is very near to the mean of simulated
+distribution so we may assume that simulation works as expected. Cases
+if actual value would be out of the simulated range can be explained
+just by poor probabilities estimation e.g.~the closer real value to
+simulated mean the better probabilities are.
+
+Mathematical Expectation:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{scales}\OperatorTok{::}\KeywordTok{dollar}\NormalTok{(}\KeywordTok{sum}\NormalTok{(src}\OperatorTok{$}\NormalTok{revenue }\OperatorTok{*}\StringTok{ }\NormalTok{src}\OperatorTok{$}\NormalTok{p))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] "$21,907.50"
+\end{verbatim}
+
+\newpage
+
+\hypertarget{real-data}{%
+\subsection{Real Data}\label{real-data}}
+
+Now we'll apply identical copy-paste approach to real data and add some
+extra features on top: a) Generate Probability Deviation Distribution
+for each of case's probability values b) Simulate binary outcomes per
+case (success-failure) based on randomly chosen single prob value per
+distribution from part a. c) Sum binary outcomes multiplied by related
+contract Value and changes coefficient. x 1Mln = Simulated
+
+We'll use Opportunities snapshot as of 2018 October 1 and filter those
+are closed (won or lost) as for now. Thus we know the outcome in advance
+for evaluating simulation accuracy.
+
+\scriptsize
+
+SQL Code for source creation:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{require}\NormalTok{(data.table)}
+\KeywordTok{require}\NormalTok{(dplyr)}
+
+\CommentTok{# source("../../R_OPPO_PROB/_oppoJoinProbs.R")}
+\KeywordTok{source}\NormalTok{(}\StringTok{"../../R_OPPO_PROB/_probGiveInLast.R"}\NormalTok{)}
+\KeywordTok{setwd}\NormalTok{(}\StringTok{"../../R_OPPO_PROB"}\NormalTok{)}
+\NormalTok{data20181001 <-}\StringTok{ }\KeywordTok{setDT}\NormalTok{(}\KeywordTok{probGiveInLast}\NormalTok{(}\DataTypeTok{given_date =} \StringTok{"2018-10-01"}\NormalTok{))}
+\NormalTok{actual <-}\StringTok{ }\KeywordTok{copy}\NormalTok{(data20181001)}
+\end{Highlighting}
+\end{Shaded}
+
+\normalsize
+
+~
+
+\hypertarget{probabilities-types-to-evaluate}{%
+\subsubsection{3 Probabilities Types to
+evaluate}\label{probabilities-types-to-evaluate}}
+
+There are 3 Probailities types to evaluate:\\
+- \texttt{Probability\ \%} - project managmet expectations\\
+- \texttt{Winning\_Probability} - SalesForce prediction\\
+- \texttt{Predicted\ Probability} is a \texttt{Machine\ Learning}
+(``hand made'') probabilities
+
+Let's take a look on each of them:
+
+~
+
+\hypertarget{probability-type-1-probability}{%
+\paragraph{\texorpdfstring{Probability Type 1:
+\texttt{Probability\ \%}}{Probability Type 1: Probability \%}}\label{probability-type-1-probability}}
+
+Summary statistics on \texttt{Probability\ \%} variable:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{require}\NormalTok{(skimr)}
+\NormalTok{prp <-}\StringTok{ }\NormalTok{actual}\OperatorTok{$}\StringTok{`}\DataTypeTok{Probability %}\StringTok{`}
+\KeywordTok{skim}\NormalTok{(prp) }\OperatorTok{%>%}\StringTok{ }\KeywordTok{pander}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+Skim summary statistics\\
+n obs:\\
+n variables:
+
+\begin{longtable}[]{@{}ccccccccccc@{}}
+\toprule
+\begin{minipage}[b]{0.10\columnwidth}\centering
+variable\strut
+\end{minipage} & \begin{minipage}[b]{0.09\columnwidth}\centering
+missing\strut
+\end{minipage} & \begin{minipage}[b]{0.10\columnwidth}\centering
+complete\strut
+\end{minipage} & \begin{minipage}[b]{0.05\columnwidth}\centering
+n\strut
+\end{minipage} & \begin{minipage}[b]{0.06\columnwidth}\centering
+mean\strut
+\end{minipage} & \begin{minipage}[b]{0.06\columnwidth}\centering
+sd\strut
+\end{minipage} & \begin{minipage}[b]{0.04\columnwidth}\centering
+p0\strut
+\end{minipage} & \begin{minipage}[b]{0.05\columnwidth}\centering
+p25\strut
+\end{minipage} & \begin{minipage}[b]{0.05\columnwidth}\centering
+p50\strut
+\end{minipage} & \begin{minipage}[b]{0.05\columnwidth}\centering
+p75\strut
+\end{minipage} & \begin{minipage}[b]{0.06\columnwidth}\centering
+p100\strut
+\end{minipage}\tabularnewline
+\midrule
+\endhead
+\begin{minipage}[t]{0.10\columnwidth}\centering
+prp\strut
+\end{minipage} & \begin{minipage}[t]{0.09\columnwidth}\centering
+0\strut
+\end{minipage} & \begin{minipage}[t]{0.10\columnwidth}\centering
+988\strut
+\end{minipage} & \begin{minipage}[t]{0.05\columnwidth}\centering
+988\strut
+\end{minipage} & \begin{minipage}[t]{0.06\columnwidth}\centering
+0.27\strut
+\end{minipage} & \begin{minipage}[t]{0.06\columnwidth}\centering
+0.29\strut
+\end{minipage} & \begin{minipage}[t]{0.04\columnwidth}\centering
+0\strut
+\end{minipage} & \begin{minipage}[t]{0.05\columnwidth}\centering
+0\strut
+\end{minipage} & \begin{minipage}[t]{0.05\columnwidth}\centering
+0.1\strut
+\end{minipage} & \begin{minipage}[t]{0.05\columnwidth}\centering
+0.5\strut
+\end{minipage} & \begin{minipage}[t]{0.06\columnwidth}\centering
+0.99\strut
+\end{minipage}\tabularnewline
+\bottomrule
+\end{longtable}
+
+Simulating revenue distribution using \texttt{Probability\ \%} variable
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{err <-}\StringTok{ }\NormalTok{actual}\OperatorTok{$}\StringTok{`}\DataTypeTok{Probability %}\StringTok{`} \OperatorTok{-}\StringTok{ }\NormalTok{actual}\OperatorTok{$}\NormalTok{now_IsWon}
+
+\NormalTok{sim_pp <-}\StringTok{ }\KeywordTok{pvalDist}\NormalTok{(}\DataTypeTok{pvec     =}\NormalTok{ actual}\OperatorTok{$}\StringTok{`}\DataTypeTok{Probability %}\StringTok{`}\NormalTok{,}
+                   \DataTypeTok{valvec   =}\NormalTok{ actual}\OperatorTok{$}\StringTok{`}\DataTypeTok{Amount USD}\StringTok{`}\NormalTok{,}
+                   \DataTypeTok{rep      =} \DecValTok{10000}\NormalTok{,}
+                   \DataTypeTok{parallel =} \OtherTok{TRUE}\NormalTok{,}
+                   \DataTypeTok{error    =} \OtherTok{FALSE}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## <pvalDist> parallel
+\end{verbatim}
+
+\begin{verbatim}
+## <pMinLen>: 280 zeroes & ones are removed / total 988 p
+\end{verbatim}
+
+\begin{verbatim}
+## 0.01 minimum length for bernulli success-failure cond: 1000
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{sim_p2 <-}\StringTok{ }\KeywordTok{pvalDist}\NormalTok{(}\DataTypeTok{pvec     =}\NormalTok{ actual}\OperatorTok{$}\StringTok{`}\DataTypeTok{Probability %}\StringTok{`}\NormalTok{,}
+                   \DataTypeTok{valvec   =}\NormalTok{ actual}\OperatorTok{$}\StringTok{`}\DataTypeTok{Amount USD}\StringTok{`}\NormalTok{,}
+                   \DataTypeTok{rep      =} \DecValTok{10000}\NormalTok{,}
+                   \DataTypeTok{parallel =} \OtherTok{TRUE}\NormalTok{,}
+                   \DataTypeTok{error    =} \OtherTok{TRUE}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## <pvalDist> parallel
+\end{verbatim}
+
+\begin{verbatim}
+## <pMinLen>: 280 zeroes & ones are removed / total 988 p
+\end{verbatim}
+
+\begin{verbatim}
+## 0.01 minimum length for bernulli success-failure cond: 1000
+\end{verbatim}
+
+\begin{verbatim}
+## TRUE
+\end{verbatim}
+
+Plot Revenue Distrbution upon \texttt{Probability\ \%} variable:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{plotdist}\NormalTok{(sim_pp)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{pvalDist_files/figure-latex/unnamed-chunk-14-1.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{plotdist}\NormalTok{(sim_p2)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{pvalDist_files/figure-latex/unnamed-chunk-14-2.pdf}
+
+~
+
+Summary statiscts of revenue distribution using
+\texttt{Probability\ \%}:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{skim}\NormalTok{(sim_pp) }\OperatorTok{%>%}\StringTok{ }\KeywordTok{pander}\NormalTok{() }\CommentTok{# all simulations statistics}
+\end{Highlighting}
+\end{Shaded}
+
+Skim summary statistics\\
+n obs:\\
+n variables:
+
+\begin{longtable}[]{@{}cccccccc@{}}
+\caption{Table continues below}\tabularnewline
+\toprule
+\begin{minipage}[b]{0.11\columnwidth}\centering
+variable\strut
+\end{minipage} & \begin{minipage}[b]{0.10\columnwidth}\centering
+missing\strut
+\end{minipage} & \begin{minipage}[b]{0.11\columnwidth}\centering
+complete\strut
+\end{minipage} & \begin{minipage}[b]{0.08\columnwidth}\centering
+n\strut
+\end{minipage} & \begin{minipage}[b]{0.10\columnwidth}\centering
+mean\strut
+\end{minipage} & \begin{minipage}[b]{0.10\columnwidth}\centering
+sd\strut
+\end{minipage} & \begin{minipage}[b]{0.10\columnwidth}\centering
+p0\strut
+\end{minipage} & \begin{minipage}[b]{0.10\columnwidth}\centering
+p25\strut
+\end{minipage}\tabularnewline
+\midrule
+\endfirsthead
+\toprule
+\begin{minipage}[b]{0.11\columnwidth}\centering
+variable\strut
+\end{minipage} & \begin{minipage}[b]{0.10\columnwidth}\centering
+missing\strut
+\end{minipage} & \begin{minipage}[b]{0.11\columnwidth}\centering
+complete\strut
+\end{minipage} & \begin{minipage}[b]{0.08\columnwidth}\centering
+n\strut
+\end{minipage} & \begin{minipage}[b]{0.10\columnwidth}\centering
+mean\strut
+\end{minipage} & \begin{minipage}[b]{0.10\columnwidth}\centering
+sd\strut
+\end{minipage} & \begin{minipage}[b]{0.10\columnwidth}\centering
+p0\strut
+\end{minipage} & \begin{minipage}[b]{0.10\columnwidth}\centering
+p25\strut
+\end{minipage}\tabularnewline
+\midrule
+\endhead
+\begin{minipage}[t]{0.11\columnwidth}\centering
+sim\_pp\strut
+\end{minipage} & \begin{minipage}[t]{0.10\columnwidth}\centering
+0\strut
+\end{minipage} & \begin{minipage}[t]{0.11\columnwidth}\centering
+10000\strut
+\end{minipage} & \begin{minipage}[t]{0.08\columnwidth}\centering
+10000\strut
+\end{minipage} & \begin{minipage}[t]{0.10\columnwidth}\centering
+3.2e+08\strut
+\end{minipage} & \begin{minipage}[t]{0.10\columnwidth}\centering
+7.6e+07\strut
+\end{minipage} & \begin{minipage}[t]{0.10\columnwidth}\centering
+1.5e+08\strut
+\end{minipage} & \begin{minipage}[t]{0.10\columnwidth}\centering
+2.6e+08\strut
+\end{minipage}\tabularnewline
+\bottomrule
+\end{longtable}
+
+\begin{longtable}[]{@{}ccc@{}}
+\toprule
+\begin{minipage}[b]{0.13\columnwidth}\centering
+p50\strut
+\end{minipage} & \begin{minipage}[b]{0.13\columnwidth}\centering
+p75\strut
+\end{minipage} & \begin{minipage}[b]{0.13\columnwidth}\centering
+p100\strut
+\end{minipage}\tabularnewline
+\midrule
+\endhead
+\begin{minipage}[t]{0.13\columnwidth}\centering
+3.2e+08\strut
+\end{minipage} & \begin{minipage}[t]{0.13\columnwidth}\centering
+3.9e+08\strut
+\end{minipage} & \begin{minipage}[t]{0.13\columnwidth}\centering
+4.9e+08\strut
+\end{minipage}\tabularnewline
+\bottomrule
+\end{longtable}
+
+~
+
+\hypertarget{probability-type-2-winning_probability}{%
+\paragraph{\texorpdfstring{Probability Type 2:
+\texttt{Winning\_Probability}}{Probability Type 2: Winning\_Probability}}\label{probability-type-2-winning_probability}}
+
+now let's try to simulate revenues using \texttt{Winning\_Probability}
+variable.
+
+~
+
+Summary Statistics of \texttt{Winning\_Probability} variable (423
+missing values):
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{wpr <-}\StringTok{ }\NormalTok{actual}\OperatorTok{$}\NormalTok{Winning_Probability}
+\KeywordTok{skim}\NormalTok{(wpr) }\OperatorTok{%>%}\StringTok{ }\KeywordTok{pander}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+Skim summary statistics\\
+n obs:\\
+n variables:
+
+\begin{longtable}[]{@{}ccccccccccc@{}}
+\toprule
+\begin{minipage}[b]{0.10\columnwidth}\centering
+variable\strut
+\end{minipage} & \begin{minipage}[b]{0.09\columnwidth}\centering
+missing\strut
+\end{minipage} & \begin{minipage}[b]{0.10\columnwidth}\centering
+complete\strut
+\end{minipage} & \begin{minipage}[b]{0.05\columnwidth}\centering
+n\strut
+\end{minipage} & \begin{minipage}[b]{0.06\columnwidth}\centering
+mean\strut
+\end{minipage} & \begin{minipage}[b]{0.06\columnwidth}\centering
+sd\strut
+\end{minipage} & \begin{minipage}[b]{0.04\columnwidth}\centering
+p0\strut
+\end{minipage} & \begin{minipage}[b]{0.05\columnwidth}\centering
+p25\strut
+\end{minipage} & \begin{minipage}[b]{0.05\columnwidth}\centering
+p50\strut
+\end{minipage} & \begin{minipage}[b]{0.05\columnwidth}\centering
+p75\strut
+\end{minipage} & \begin{minipage}[b]{0.06\columnwidth}\centering
+p100\strut
+\end{minipage}\tabularnewline
+\midrule
+\endhead
+\begin{minipage}[t]{0.10\columnwidth}\centering
+wpr\strut
+\end{minipage} & \begin{minipage}[t]{0.09\columnwidth}\centering
+0\strut
+\end{minipage} & \begin{minipage}[t]{0.10\columnwidth}\centering
+988\strut
+\end{minipage} & \begin{minipage}[t]{0.05\columnwidth}\centering
+988\strut
+\end{minipage} & \begin{minipage}[t]{0.06\columnwidth}\centering
+0.3\strut
+\end{minipage} & \begin{minipage}[t]{0.06\columnwidth}\centering
+0.28\strut
+\end{minipage} & \begin{minipage}[t]{0.04\columnwidth}\centering
+0\strut
+\end{minipage} & \begin{minipage}[t]{0.05\columnwidth}\centering
+0.1\strut
+\end{minipage} & \begin{minipage}[t]{0.05\columnwidth}\centering
+0.2\strut
+\end{minipage} & \begin{minipage}[t]{0.05\columnwidth}\centering
+0.5\strut
+\end{minipage} & \begin{minipage}[t]{0.06\columnwidth}\centering
+1\strut
+\end{minipage}\tabularnewline
+\bottomrule
+\end{longtable}
+
+~
+
+Imputation. Since there lot's of missing values we'll replace missing
+\texttt{Winning\_Probability} with \texttt{Probability\ \%}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{require}\NormalTok{(dplyr)}
+\NormalTok{ful.win.prob <-}\StringTok{ }\KeywordTok{case_when}\NormalTok{(}\KeywordTok{is.na}\NormalTok{(actual}\OperatorTok{$}\NormalTok{Winning_Probability) }\OperatorTok{~}\StringTok{ }\NormalTok{actual}\OperatorTok{$}\StringTok{`}\DataTypeTok{Probability %}\StringTok{`}\NormalTok{,}
+                          \OtherTok{TRUE} \OperatorTok{~}\StringTok{ }\NormalTok{actual}\OperatorTok{$}\NormalTok{Winning_Probabilit)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{skim}\NormalTok{(ful.win.prob) }\OperatorTok{%>%}\StringTok{ }\KeywordTok{pander}\NormalTok{() }\CommentTok{# inspecting for non missing probabilities vector}
+\end{Highlighting}
+\end{Shaded}
+
+Skim summary statistics\\
+n obs:\\
+n variables:
+
+\begin{longtable}[]{@{}ccccccccccc@{}}
+\toprule
+\begin{minipage}[b]{0.12\columnwidth}\centering
+variable\strut
+\end{minipage} & \begin{minipage}[b]{0.08\columnwidth}\centering
+missing\strut
+\end{minipage} & \begin{minipage}[b]{0.09\columnwidth}\centering
+complete\strut
+\end{minipage} & \begin{minipage}[b]{0.05\columnwidth}\centering
+n\strut
+\end{minipage} & \begin{minipage}[b]{0.06\columnwidth}\centering
+mean\strut
+\end{minipage} & \begin{minipage}[b]{0.06\columnwidth}\centering
+sd\strut
+\end{minipage} & \begin{minipage}[b]{0.04\columnwidth}\centering
+p0\strut
+\end{minipage} & \begin{minipage}[b]{0.05\columnwidth}\centering
+p25\strut
+\end{minipage} & \begin{minipage}[b]{0.05\columnwidth}\centering
+p50\strut
+\end{minipage} & \begin{minipage}[b]{0.05\columnwidth}\centering
+p75\strut
+\end{minipage} & \begin{minipage}[b]{0.06\columnwidth}\centering
+p100\strut
+\end{minipage}\tabularnewline
+\midrule
+\endhead
+\begin{minipage}[t]{0.12\columnwidth}\centering
+ful.win.prob\strut
+\end{minipage} & \begin{minipage}[t]{0.08\columnwidth}\centering
+0\strut
+\end{minipage} & \begin{minipage}[t]{0.09\columnwidth}\centering
+988\strut
+\end{minipage} & \begin{minipage}[t]{0.05\columnwidth}\centering
+988\strut
+\end{minipage} & \begin{minipage}[t]{0.06\columnwidth}\centering
+0.3\strut
+\end{minipage} & \begin{minipage}[t]{0.06\columnwidth}\centering
+0.28\strut
+\end{minipage} & \begin{minipage}[t]{0.04\columnwidth}\centering
+0\strut
+\end{minipage} & \begin{minipage}[t]{0.05\columnwidth}\centering
+0.1\strut
+\end{minipage} & \begin{minipage}[t]{0.05\columnwidth}\centering
+0.2\strut
+\end{minipage} & \begin{minipage}[t]{0.05\columnwidth}\centering
+0.5\strut
+\end{minipage} & \begin{minipage}[t]{0.06\columnwidth}\centering
+1\strut
+\end{minipage}\tabularnewline
+\bottomrule
+\end{longtable}
+
+~
+
+Simulating revenue distribution using modified (imputation)
+\texttt{Winning\_Probability} variable:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{sim_win_prob <-}\StringTok{ }\KeywordTok{pvalDist}\NormalTok{(}\DataTypeTok{pvec     =}\NormalTok{ ful.win.prob,}
+                         \DataTypeTok{valvec   =}\NormalTok{ actual}\OperatorTok{$}\StringTok{`}\DataTypeTok{Amount USD}\StringTok{`}\NormalTok{,}
+                         \DataTypeTok{rep      =} \DecValTok{10000}\NormalTok{,}
+                         \DataTypeTok{parallel =} \OtherTok{TRUE}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Loading required package: future
+\end{verbatim}
+
+\begin{verbatim}
+## Loading required package: doFuture
+\end{verbatim}
+
+\begin{verbatim}
+## Loading required package: globals
+\end{verbatim}
+
+\begin{verbatim}
+## Loading required package: iterators
+\end{verbatim}
+
+\begin{verbatim}
+## Loading required package: parallel
+\end{verbatim}
+
+\begin{verbatim}
+## <pvalDist> parallel
+\end{verbatim}
+
+\begin{verbatim}
+## <pMinLen>: 218 zeroes & ones are removed / total 988 p
+\end{verbatim}
+
+\begin{verbatim}
+## 0.1 minimum length for bernulli success-failure cond: 101
+\end{verbatim}
+
+Plot revenue distribution upon \texttt{Winning\_Probability} variable:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{plotdist}\NormalTok{(sim_win_prob)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{pvalDist_files/figure-latex/unnamed-chunk-20-1.pdf}
+
+Revenue Distribution summary statistics:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{skim}\NormalTok{(sim_win_prob) }\OperatorTok{%>%}\StringTok{ }\KeywordTok{pander}\NormalTok{() }\CommentTok{# all simulations statistics}
+\end{Highlighting}
+\end{Shaded}
+
+Skim summary statistics\\
+n obs:\\
+n variables:
+
+\begin{longtable}[]{@{}ccccccc@{}}
+\caption{Table continues below}\tabularnewline
+\toprule
+\begin{minipage}[b]{0.16\columnwidth}\centering
+variable\strut
+\end{minipage} & \begin{minipage}[b]{0.11\columnwidth}\centering
+missing\strut
+\end{minipage} & \begin{minipage}[b]{0.12\columnwidth}\centering
+complete\strut
+\end{minipage} & \begin{minipage}[b]{0.09\columnwidth}\centering
+n\strut
+\end{minipage} & \begin{minipage}[b]{0.11\columnwidth}\centering
+mean\strut
+\end{minipage} & \begin{minipage}[b]{0.11\columnwidth}\centering
+sd\strut
+\end{minipage} & \begin{minipage}[b]{0.11\columnwidth}\centering
+p0\strut
+\end{minipage}\tabularnewline
+\midrule
+\endfirsthead
+\toprule
+\begin{minipage}[b]{0.16\columnwidth}\centering
+variable\strut
+\end{minipage} & \begin{minipage}[b]{0.11\columnwidth}\centering
+missing\strut
+\end{minipage} & \begin{minipage}[b]{0.12\columnwidth}\centering
+complete\strut
+\end{minipage} & \begin{minipage}[b]{0.09\columnwidth}\centering
+n\strut
+\end{minipage} & \begin{minipage}[b]{0.11\columnwidth}\centering
+mean\strut
+\end{minipage} & \begin{minipage}[b]{0.11\columnwidth}\centering
+sd\strut
+\end{minipage} & \begin{minipage}[b]{0.11\columnwidth}\centering
+p0\strut
+\end{minipage}\tabularnewline
+\midrule
+\endhead
+\begin{minipage}[t]{0.16\columnwidth}\centering
+sim\_win\_prob\strut
+\end{minipage} & \begin{minipage}[t]{0.11\columnwidth}\centering
+0\strut
+\end{minipage} & \begin{minipage}[t]{0.12\columnwidth}\centering
+10000\strut
+\end{minipage} & \begin{minipage}[t]{0.09\columnwidth}\centering
+10000\strut
+\end{minipage} & \begin{minipage}[t]{0.11\columnwidth}\centering
+3.4e+08\strut
+\end{minipage} & \begin{minipage}[t]{0.11\columnwidth}\centering
+7.5e+07\strut
+\end{minipage} & \begin{minipage}[t]{0.11\columnwidth}\centering
+1.7e+08\strut
+\end{minipage}\tabularnewline
+\bottomrule
+\end{longtable}
+
+\begin{longtable}[]{@{}cccc@{}}
+\toprule
+\begin{minipage}[b]{0.12\columnwidth}\centering
+p25\strut
+\end{minipage} & \begin{minipage}[b]{0.12\columnwidth}\centering
+p50\strut
+\end{minipage} & \begin{minipage}[b]{0.10\columnwidth}\centering
+p75\strut
+\end{minipage} & \begin{minipage}[b]{0.12\columnwidth}\centering
+p100\strut
+\end{minipage}\tabularnewline
+\midrule
+\endhead
+\begin{minipage}[t]{0.12\columnwidth}\centering
+2.6e+08\strut
+\end{minipage} & \begin{minipage}[t]{0.12\columnwidth}\centering
+3.4e+08\strut
+\end{minipage} & \begin{minipage}[t]{0.10\columnwidth}\centering
+4e+08\strut
+\end{minipage} & \begin{minipage}[t]{0.12\columnwidth}\centering
+5.2e+08\strut
+\end{minipage}\tabularnewline
+\bottomrule
+\end{longtable}
+
+~
+
+\hypertarget{probability-type-3-predicted-probability-machine-learning}{%
+\paragraph{\texorpdfstring{Probability Type 3:
+\texttt{Predicted\ Probability} (Machine
+Learning)}{Probability Type 3: Predicted Probability (Machine Learning)}}\label{probability-type-3-predicted-probability-machine-learning}}
+
+Lastly we'll simulate probabilities using Machine Learning like if we
+were in 1 October 2018. All adjustment identical to what we have in
+production:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# source("../../R_OPPO_PROB/_oppoJoinProbs.R", local = TRUE)}
+\CommentTok{# nowwd <- getwd()}
+\CommentTok{# setwd("../../R_OPPO_PROB")}
+\CommentTok{# ml_prob <- oppoJoinProbs(given_date = "2018-10-01")}
+\CommentTok{# setwd(nowwd)}
+\NormalTok{actual[now_IsWon }\OperatorTok{==}\StringTok{ }\DecValTok{1}\NormalTok{]}\OperatorTok{$}\NormalTok{now_AmountUSD}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##   [1]        0.00        0.00   582415.00        0.00  2700000.00
+##   [6]    80000.00   103000.00    89941.54   926438.20   600000.00
+##  [11]   285152.67   827928.00   653820.00  1020033.71  1836346.74
+##  [16]     8500.00    20000.00   167928.09    50000.00    18789.89
+##  [21]  1300000.00 16681914.61   145000.00   882352.94   320000.00
+##  [26]  1237113.40   186488.55  1700000.00  2528068.00   504000.00
+##  [31]   101400.00   995569.00  1180571.13   609242.65   102050.00
+##  [36]   738470.00   300000.00   160660.21    67000.00   768000.00
+##  [41]   135000.00   100000.00   400000.00  1332638.00   157000.00
+##  [46]   250000.00   253000.00  1000000.00   327895.00    77205.88
+##  [51]     2315.00   242500.00   317479.41    26470.59     3950.00
+##  [56]   416541.98    27249.44    33029.78   470129.87  4971932.00
+##  [61]   200000.00   200000.00   852000.00    95271.91    38016.00
+##  [66]   180000.00    53435.11    74750.00  3167767.42   271000.00
+##  [71]        0.00   480519.48   100000.00    50000.00    39649.10
+##  [76]   184742.65   118167.94   125000.00    40000.00    45000.00
+##  [81]   617977.53   803406.74   149090.00   161330.00   350000.00
+##  [86]   500000.00   478080.00   121415.73  1437966.41     8000.00
+##  [91]    80000.00   988764.04   166500.00   500000.00        0.00
+##  [96]   278350.52    44000.00   235965.60   235000.00   157303.37
+## [101]    37505.62   538050.00   150000.00   339734.83   225000.00
+## [106]   494325.84    70786.52   561797.75   201000.00   165000.00
+## [111]   277078.65   485393.26  6121905.62   167676.40    10000.00
+## [116]   746428.00   225000.00   150000.00    56179.78   517270.99
+## [121]   120000.00   195984.73    27182.02  4600000.00   327000.00
+## [126]   273844.49   287206.74   700000.00   443202.00    37600.00
+## [131]   140666.97     4700.00        0.00   105343.51    58701.30
+## [136]   575000.00    43814.43    93916.85   328424.72   171000.00
+## [141]        0.00   543248.05  2327560.00  1307776.00   438480.00
+## [146]   221328.00   187920.00  1215000.00    47120.00    63000.00
+## [151]   212480.00   102679.52   342428.57   116050.00   205000.00
+## [156]  7500000.00   281750.00   418426.97    32224.72   133987.00
+## [161]   167282.44   301354.96    15812.43  1488277.53   156000.00
+## [166]   203000.00  1285000.00   578000.00   242000.00    80000.00
+## [171]    50000.00   106966.29   400000.00    56179.78   136921.35
+## [176]   110000.00   280000.00   100000.00    39985.00   112273.00
+## [181]   210000.00   158706.00    20000.00   100000.00   513450.00
+## [186]    84943.82    88700.00     6446.00   646753.25    77700.00
+## [191]    13536.00    74448.00    74448.00    67201.12  1862350.00
+## [196]    66238.95   562539.18   548302.87   100000.00    65779.10
+## [201]   288263.36    70534.35    94411.76    50000.00   128015.27
+## [206]    67251.91  1277425.00   860500.00    18000.00    51948.05
+## [211]   255809.09    20493.26   407103.00   197880.00   695000.00
+## [216]   280000.00   200000.00   248412.37    20000.00   166842.02
+## [221]   105168.54  1038961.04   867541.29   371134.02   208000.00
+## [226]   300000.00   165000.00   164535.22   180000.00    34909.15
+## [231]   447000.00        0.00   174000.00    22572.00   800000.00
+## [236]   600000.00   103000.00   531000.00   730337.08   158426.97
+## [241]    16320.00   198900.00    50000.00  1483633.59    57801.12
+## [246]        0.00   893000.00  1076411.24
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{head}\NormalTok{(actual[, }\KeywordTok{c}\NormalTok{(}\StringTok{"Opportunity_ID"}\NormalTok{, }\StringTok{"Predicted Probability"}\NormalTok{)])}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{tabular}{l|r}
+\hline
+Opportunity\_ID & Predicted Probability\\
+\hline
+0060J00000p62fgQAA & 0.0135521\\
+\hline
+0060J00000p67vHQAQ & 0.0082243\\
+\hline
+0060J00000p6cmfQAA & 0.0090760\\
+\hline
+0060J00000p6cXpQAI & 0.1271619\\
+\hline
+0060J00000p6dTUQAY & 0.0098393\\
+\hline
+0060J00000p6eNNQAY & 0.0555852\\
+\hline
+\end{tabular}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{pprob <-}\StringTok{ }\NormalTok{actual}\OperatorTok{$}\StringTok{`}\DataTypeTok{Predicted Probability}\StringTok{`}
+\end{Highlighting}
+\end{Shaded}
+
+Summary statistics on \texttt{Predicted\ Probability} (Machine Learning)
+probabilities:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{skim}\NormalTok{(pprob) }\OperatorTok{%>%}\StringTok{ }\KeywordTok{pander}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+Skim summary statistics\\
+n obs:\\
+n variables:
+
+\begin{longtable}[]{@{}ccccccccccc@{}}
+\toprule
+\begin{minipage}[b]{0.09\columnwidth}\centering
+variable\strut
+\end{minipage} & \begin{minipage}[b]{0.08\columnwidth}\centering
+missing\strut
+\end{minipage} & \begin{minipage}[b]{0.09\columnwidth}\centering
+complete\strut
+\end{minipage} & \begin{minipage}[b]{0.05\columnwidth}\centering
+n\strut
+\end{minipage} & \begin{minipage}[b]{0.06\columnwidth}\centering
+mean\strut
+\end{minipage} & \begin{minipage}[b]{0.06\columnwidth}\centering
+sd\strut
+\end{minipage} & \begin{minipage}[b]{0.04\columnwidth}\centering
+p0\strut
+\end{minipage} & \begin{minipage}[b]{0.07\columnwidth}\centering
+p25\strut
+\end{minipage} & \begin{minipage}[b]{0.07\columnwidth}\centering
+p50\strut
+\end{minipage} & \begin{minipage}[b]{0.06\columnwidth}\centering
+p75\strut
+\end{minipage} & \begin{minipage}[b]{0.06\columnwidth}\centering
+p100\strut
+\end{minipage}\tabularnewline
+\midrule
+\endhead
+\begin{minipage}[t]{0.09\columnwidth}\centering
+pprob\strut
+\end{minipage} & \begin{minipage}[t]{0.08\columnwidth}\centering
+0\strut
+\end{minipage} & \begin{minipage}[t]{0.09\columnwidth}\centering
+988\strut
+\end{minipage} & \begin{minipage}[t]{0.05\columnwidth}\centering
+988\strut
+\end{minipage} & \begin{minipage}[t]{0.06\columnwidth}\centering
+0.26\strut
+\end{minipage} & \begin{minipage}[t]{0.06\columnwidth}\centering
+0.33\strut
+\end{minipage} & \begin{minipage}[t]{0.04\columnwidth}\centering
+0\strut
+\end{minipage} & \begin{minipage}[t]{0.07\columnwidth}\centering
+0.025\strut
+\end{minipage} & \begin{minipage}[t]{0.07\columnwidth}\centering
+0.082\strut
+\end{minipage} & \begin{minipage}[t]{0.06\columnwidth}\centering
+0.39\strut
+\end{minipage} & \begin{minipage}[t]{0.06\columnwidth}\centering
+0.99\strut
+\end{minipage}\tabularnewline
+\bottomrule
+\end{longtable}
+
+~
+
+Now we'll join predicted probabilities for given date to our
+\texttt{actual} dataset:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# join_ml <- left_join(actual, ml_prob_slim, by = "Opportunity ID")}
+\CommentTok{# head(join_ml)}
+\end{Highlighting}
+\end{Shaded}
+
+~
+
+now let's see if there are any missing..
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# pprob.y <- join_ml$`Predicted Probability.y`}
+\CommentTok{# skim(pprob.y) %>% pander()}
+\end{Highlighting}
+\end{Shaded}
+
+~
+
+Perfect! Nothing (0) is missing. So we can start simulation.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{sim_ml_prob <-}\StringTok{ }\KeywordTok{pvalDist}\NormalTok{(}\DataTypeTok{pvec =}\NormalTok{ actual}\OperatorTok{$}\StringTok{`}\DataTypeTok{Predicted Probability}\StringTok{`}\NormalTok{,}
+                         \DataTypeTok{valvec =}\NormalTok{ actual}\OperatorTok{$}\StringTok{`}\DataTypeTok{Amount USD}\StringTok{`}\NormalTok{,}
+                         \DataTypeTok{rep =} \DecValTok{10000}\NormalTok{,}
+                         \DataTypeTok{parallel =} \OtherTok{TRUE}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+Summary statistics of simulated Revenue Distribution using
+\texttt{Predicted\ Probability} (Machine Learning) probailities
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{skim}\NormalTok{(sim_ml_prob) }\OperatorTok{%>%}\StringTok{ }\KeywordTok{pander}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+Skim summary statistics\\
+n obs:\\
+n variables:
+
+\begin{longtable}[]{@{}ccccccc@{}}
+\caption{Table continues below}\tabularnewline
+\toprule
+\begin{minipage}[b]{0.15\columnwidth}\centering
+variable\strut
+\end{minipage} & \begin{minipage}[b]{0.11\columnwidth}\centering
+missing\strut
+\end{minipage} & \begin{minipage}[b]{0.12\columnwidth}\centering
+complete\strut
+\end{minipage} & \begin{minipage}[b]{0.09\columnwidth}\centering
+n\strut
+\end{minipage} & \begin{minipage}[b]{0.11\columnwidth}\centering
+mean\strut
+\end{minipage} & \begin{minipage}[b]{0.11\columnwidth}\centering
+sd\strut
+\end{minipage} & \begin{minipage}[b]{0.11\columnwidth}\centering
+p0\strut
+\end{minipage}\tabularnewline
+\midrule
+\endfirsthead
+\toprule
+\begin{minipage}[b]{0.15\columnwidth}\centering
+variable\strut
+\end{minipage} & \begin{minipage}[b]{0.11\columnwidth}\centering
+missing\strut
+\end{minipage} & \begin{minipage}[b]{0.12\columnwidth}\centering
+complete\strut
+\end{minipage} & \begin{minipage}[b]{0.09\columnwidth}\centering
+n\strut
+\end{minipage} & \begin{minipage}[b]{0.11\columnwidth}\centering
+mean\strut
+\end{minipage} & \begin{minipage}[b]{0.11\columnwidth}\centering
+sd\strut
+\end{minipage} & \begin{minipage}[b]{0.11\columnwidth}\centering
+p0\strut
+\end{minipage}\tabularnewline
+\midrule
+\endhead
+\begin{minipage}[t]{0.15\columnwidth}\centering
+sim\_ml\_prob\strut
+\end{minipage} & \begin{minipage}[t]{0.11\columnwidth}\centering
+0\strut
+\end{minipage} & \begin{minipage}[t]{0.12\columnwidth}\centering
+10000\strut
+\end{minipage} & \begin{minipage}[t]{0.09\columnwidth}\centering
+10000\strut
+\end{minipage} & \begin{minipage}[t]{0.11\columnwidth}\centering
+2.2e+08\strut
+\end{minipage} & \begin{minipage}[t]{0.11\columnwidth}\centering
+6.3e+07\strut
+\end{minipage} & \begin{minipage}[t]{0.11\columnwidth}\centering
+1.2e+08\strut
+\end{minipage}\tabularnewline
+\bottomrule
+\end{longtable}
+
+\begin{longtable}[]{@{}cccc@{}}
+\toprule
+\begin{minipage}[b]{0.12\columnwidth}\centering
+p25\strut
+\end{minipage} & \begin{minipage}[b]{0.12\columnwidth}\centering
+p50\strut
+\end{minipage} & \begin{minipage}[b]{0.12\columnwidth}\centering
+p75\strut
+\end{minipage} & \begin{minipage}[b]{0.12\columnwidth}\centering
+p100\strut
+\end{minipage}\tabularnewline
+\midrule
+\endhead
+\begin{minipage}[t]{0.12\columnwidth}\centering
+1.8e+08\strut
+\end{minipage} & \begin{minipage}[t]{0.12\columnwidth}\centering
+1.9e+08\strut
+\end{minipage} & \begin{minipage}[t]{0.12\columnwidth}\centering
+2.9e+08\strut
+\end{minipage} & \begin{minipage}[t]{0.12\columnwidth}\centering
+4.1e+08\strut
+\end{minipage}\tabularnewline
+\bottomrule
+\end{longtable}
+
+Histogram of simulated Revenue Distribution using
+\texttt{Predicted\ Probability} (Machine Learning) probailities
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{plotdist}\NormalTok{(sim_ml_prob)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{pvalDist_files/figure-latex/unnamed-chunk-29-1.pdf}
+
+~
+
+\hypertarget{intermediate-conclusion.}{%
+\subsubsection{Intermediate
+conclusion.}\label{intermediate-conclusion.}}
+
+We haved proved upon simulation that existing Machine Learning
+Probabilities model has highest fidelity. As We can see based on 3
+probabilities types, simulation mean of the one based on Machine
+learning are much closer to the acutal value. Which is:
+
+In case Contract Values per Opportinity won't change:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{scales}\OperatorTok{::}\KeywordTok{dollar}\NormalTok{(actual[now_IsWon }\OperatorTok{==}\StringTok{ "1"}\NormalTok{, }\KeywordTok{sum}\NormalTok{(}\StringTok{`}\DataTypeTok{Amount USD}\StringTok{`}\NormalTok{)])}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] "$198,477,807"
+\end{verbatim}
+
+~
+
+In case Contract values change during lifetime:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{scales}\OperatorTok{::}\KeywordTok{dollar}\NormalTok{(actual[now_IsWon }\OperatorTok{==}\StringTok{ "1"}\NormalTok{, }\KeywordTok{sum}\NormalTok{(now_AmountUSD)])}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] "$127,847,316"
+\end{verbatim}
+
+\newpage
+
+\hypertarget{adding-extra-coefficient-for-opportunity-amounts}{%
+\subsubsection{Adding Extra Coefficient for Opportunity
+Amounts}\label{adding-extra-coefficient-for-opportunity-amounts}}
+
+As seen previously there are lifetime changes in the amount values by
+Opportunity. Which can be seen in dataset head below. \texttt{AmountUSD}
+represent amount of \texttt{Opportinity\ ID} on ``2018-10-01'',
+\texttt{now\_AmountUSD} represent ``Amount USD'' but up to date:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{head}\NormalTok{(actual[, .(}\StringTok{`}\DataTypeTok{Opportunity_ID}\StringTok{`}\NormalTok{, }\StringTok{`}\DataTypeTok{Amount USD}\StringTok{`}\NormalTok{, }\StringTok{`}\DataTypeTok{now_AmountUSD}\StringTok{`}\NormalTok{)])}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{tabular}{l|r|r}
+\hline
+Opportunity\_ID & Amount USD & now\_AmountUSD\\
+\hline
+0060J00000p62fgQAA & 2418201.3 & 2247191.0\\
+\hline
+0060J00000p67vHQAQ & 483640.3 & 449438.2\\
+\hline
+0060J00000p6cmfQAA & 544095.3 & 505618.0\\
+\hline
+0060J00000p6cXpQAI & 100000.0 & 100000.0\\
+\hline
+0060J00000p6dTUQAY & 1209100.7 & 1123595.5\\
+\hline
+0060J00000p6eNNQAY & 1330010.7 & 1235955.1\\
+\hline
+\end{tabular}
+
+~
+
+As far as we need changes coeffients for the win cases only, we'll
+download opportunities of ``2018-10-01'' from snapshot and filter those
+IDs finished as win up to date:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# nowwd <- getwd()}
+\CommentTok{# setwd("../../R_OPPO_PROB")}
+\NormalTok{won <-}\StringTok{ }\NormalTok{actual[now_IsWon }\OperatorTok{==}\StringTok{ }\DecValTok{1}\NormalTok{]}
+\CommentTok{# setwd(nowwd)}
+\end{Highlighting}
+\end{Shaded}
+
+~
+
+Let's see how many obseravatons (IDs) from ``2018-10-01'' meets our
+criteria (won in the end):
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{nrow}\NormalTok{(won)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 248
+\end{verbatim}
+
+~
+
+For ease of \texttt{won} data exploration I'll narrow dataset keeping
+only variables we are interested in: \texttt{Opportunity\ ID},
+\texttt{Amount\ USD}, \texttt{now\_AmountUSD} and name new dataest as
+\texttt{won.cln}. Let's view dataset head:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{head}\NormalTok{(won.cln <-}\StringTok{ }\NormalTok{won[, .(}\StringTok{`}\DataTypeTok{Opportunity_ID}\StringTok{`}\NormalTok{, }\StringTok{`}\DataTypeTok{Amount USD}\StringTok{`}\NormalTok{, }\StringTok{`}\DataTypeTok{now_AmountUSD}\StringTok{`}\NormalTok{)])}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{tabular}{l|r|r}
+\hline
+Opportunity\_ID & Amount USD & now\_AmountUSD\\
+\hline
+0060J00000p6OipQAE & 3000000 & 0\\
+\hline
+0060J00000p6uVqQAI & 2500000 & 0\\
+\hline
+0060J00000p7FWPQA2 & 400000 & 582415\\
+\hline
+0060J00000p7mlnQAA & 7500000 & 0\\
+\hline
+0060J00000p7yRbQAI & 2700000 & 2700000\\
+\hline
+0060J00000p8d0nQAA & 80000 & 80000\\
+\hline
+\end{tabular}
+
+~
+
+Before calculatin difference, let's investigate initial values of
+\texttt{Amount\ USD} variable precisely:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{require}\NormalTok{(ggplot2)}
+\KeywordTok{qplot}\NormalTok{(}\DataTypeTok{x =}\NormalTok{ won.cln}\OperatorTok{$}\StringTok{`}\DataTypeTok{Amount USD}\StringTok{`}\NormalTok{, }\DataTypeTok{geom =} \StringTok{"histogram"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{pvalDist_files/figure-latex/unnamed-chunk-33-1.pdf}
+
+~
+
+\texttt{Amount\ USD} values distribution is very strongly right skewed
+since there are outlier(s) with values above \$2 Mlns.\\
+Also since mode value is around zero which requires detailed
+investigation for errors. Let's see obseravations where
+\texttt{Amount\ USD} is less then, say 5000:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{won.cln[}\StringTok{`}\DataTypeTok{Amount USD}\StringTok{`} \OperatorTok{<}\StringTok{ }\DecValTok{5000}\NormalTok{]}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{tabular}{l|r|r}
+\hline
+Opportunity\_ID & Amount USD & now\_AmountUSD\\
+\hline
+0060J00000segYGQAY & 0 & 0.00\\
+\hline
+0060J00000tMlk8QAC & 0 & 0.00\\
+\hline
+0060J00000tMlkDQAS & 0 & 543248.05\\
+\hline
+0060J00000tNlFUQA0 & 0 & 84943.82\\
+\hline
+006b000000RsoFQAAZ & 0 & 0.00\\
+\hline
+\end{tabular}
+
+~
+
+There are totally 0 obseravations where \texttt{Amount\ USD} is below
+5000. We can see above there one value = 1 among them which have the
+same meaning as = 0 so I'll replace all 1 with 0 since it have idenical
+meaning:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{won.cln[}\StringTok{`}\DataTypeTok{Amount USD}\StringTok{`} \OperatorTok{==}\StringTok{ }\DecValTok{1}\NormalTok{, }\StringTok{`}\DataTypeTok{Amount USD}\StringTok{`} \OperatorTok{:}\ErrorTok{=}\StringTok{ }\DecValTok{0}\NormalTok{]}
+\NormalTok{won.cln[}\StringTok{`}\DataTypeTok{now_AmountUSD}\StringTok{`} \OperatorTok{==}\StringTok{ }\DecValTok{1}\NormalTok{, }\StringTok{`}\DataTypeTok{now_AmountUSD}\StringTok{`} \OperatorTok{:}\ErrorTok{=}\StringTok{ }\DecValTok{0}\NormalTok{]}
+\NormalTok{won.cln[}\StringTok{`}\DataTypeTok{Amount USD}\StringTok{`} \OperatorTok{<}\StringTok{ }\DecValTok{5000}\NormalTok{]}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{tabular}{l|r|r}
+\hline
+Opportunity\_ID & Amount USD & now\_AmountUSD\\
+\hline
+0060J00000segYGQAY & 0 & 0.00\\
+\hline
+0060J00000tMlk8QAC & 0 & 0.00\\
+\hline
+0060J00000tMlkDQAS & 0 & 543248.05\\
+\hline
+0060J00000tNlFUQA0 & 0 & 84943.82\\
+\hline
+006b000000RsoFQAAZ & 0 & 0.00\\
+\hline
+\end{tabular}
+
+~
+
+Now we are ready to apply function to calculate the percentage
+difference by IDs so we could use these values as a coefficient in
+distribution of the revenue simulation. Function Code:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{diffCoef <-}\StringTok{ }\ControlFlowTok{function}\NormalTok{(begin_num,}
+\NormalTok{                        compl_num,}
+                        \DataTypeTok{na.rm =} \OtherTok{FALSE}\NormalTok{,}
+                        \DataTypeTok{round =} \OtherTok{TRUE}\NormalTok{,}
+                        \DataTypeTok{na.infinite =} \OtherTok{TRUE}\NormalTok{,}
+                        \DataTypeTok{limit_quant_tails =} \DecValTok{0}\NormalTok{) \{}
+    
+    \KeywordTok{stopifnot}\NormalTok{(}\KeywordTok{length}\NormalTok{(begin_num) }\OperatorTok{==}\StringTok{ }\KeywordTok{length}\NormalTok{(compl_num))}
+    \KeywordTok{stopifnot}\NormalTok{(}\KeywordTok{is.numeric}\NormalTok{(begin_num), }\KeywordTok{is.numeric}\NormalTok{(compl_num))}
+    
+\NormalTok{    begin.num <-}\StringTok{ }\NormalTok{begin_num}
+\NormalTok{    compl.num <-}\StringTok{ }\NormalTok{compl_num}
+    
+    \CommentTok{# oppoSQL(given_date = "2018-10-01", ended_as = "all")}
+\NormalTok{    coef0 <-}\StringTok{ }\NormalTok{(begin.num }\OperatorTok{==}\StringTok{ }\NormalTok{0L) }\OperatorTok{&}\StringTok{ }\NormalTok{(compl.num }\OperatorTok{==}\StringTok{ }\NormalTok{0L)}
+\NormalTok{    coefs <-}\StringTok{ }\NormalTok{(begin.num }\OperatorTok{-}\StringTok{ }\NormalTok{compl.num) }\OperatorTok{/}\StringTok{ }\NormalTok{begin.num}
+\NormalTok{    coefs[coef0] <-}\StringTok{ }\DecValTok{0}
+    
+    \ControlFlowTok{if}\NormalTok{ (na.infinite) \{}
+\NormalTok{        coefs[}\KeywordTok{is.infinite}\NormalTok{(coefs)] <-}\StringTok{ }\OtherTok{NA}
+\NormalTok{    \}}
+    
+    \ControlFlowTok{if}\NormalTok{ (round) \{}
+\NormalTok{        coefs <-}\StringTok{ }\KeywordTok{round}\NormalTok{(coefs, }\DecValTok{4}\NormalTok{)}
+\NormalTok{    \}}
+
+    \ControlFlowTok{if}\NormalTok{ (}\OperatorTok{!}\KeywordTok{is.null}\NormalTok{(limit_quant_tails) }\OperatorTok{&}\StringTok{ }\KeywordTok{is.numeric}\NormalTok{(limit_quant_tails)) \{}
+        \KeywordTok{stopifnot}\NormalTok{(limit_quant_tails }\OperatorTok{>=}\StringTok{ }\DecValTok{0} \OperatorTok{&}\StringTok{ }\NormalTok{limit_quant_tails }\OperatorTok{<=}\StringTok{ }\DecValTok{1}\NormalTok{)}
+\NormalTok{        q.val.left <-}\StringTok{ }\KeywordTok{quantile}\NormalTok{(coefs, limit_quant_tails, }\DataTypeTok{na.rm =} \OtherTok{TRUE}\NormalTok{)}
+\NormalTok{        q.val.right <-}\StringTok{ }\KeywordTok{quantile}\NormalTok{(coefs, }\DecValTok{1} \OperatorTok{-}\StringTok{ }\NormalTok{limit_quant_tails, }\DataTypeTok{na.rm =} \OtherTok{TRUE}\NormalTok{)}
+        \KeywordTok{message}\NormalTok{(}\StringTok{"Limit quantile Values out of "}\NormalTok{, }\KeywordTok{names}\NormalTok{(q.val.left), }\StringTok{" "}\NormalTok{,}
+                \KeywordTok{names}\NormalTok{(q.val.right), }\StringTok{": "}\NormalTok{, q.val.left, }\StringTok{" "}\NormalTok{,  q.val.right)}
+\NormalTok{        coefs[coefs }\OperatorTok{<}\StringTok{ }\NormalTok{q.val.left] <-}\StringTok{ }\OtherTok{NA}
+\NormalTok{        coefs[coefs }\OperatorTok{>}\StringTok{ }\NormalTok{q.val.right] <-}\StringTok{ }\OtherTok{NA}
+\NormalTok{    \}}
+    
+    \ControlFlowTok{if}\NormalTok{ (na.rm) \{}
+\NormalTok{        coefs <-}\StringTok{ }\NormalTok{coefs[}\OperatorTok{!}\KeywordTok{is.na}\NormalTok{(coefs)]}
+        \KeywordTok{stopifnot}\NormalTok{(}\OperatorTok{!}\KeywordTok{is.na}\NormalTok{(coefs))}
+\NormalTok{    \}}
+    
+    \CommentTok{#what to do with th cases start = 0, end > 0L?}
+    \KeywordTok{stopifnot}\NormalTok{(}\KeywordTok{is.numeric}\NormalTok{(coefs))}
+    \KeywordTok{return}\NormalTok{(coefs)}
+\NormalTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+~
+
+Coefficient calculation uses following formula:
+\texttt{(was\ -\ now)\ /\ was} (with 10\% percentile outliers cut from
+both sides). Coefs meanings: negative coef is increase in the amount by
+the end, positive is decrease (in percent).
+
+Code:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{won.coef <-}\StringTok{ }\NormalTok{won.cln[, diff_coef }\OperatorTok{:}\ErrorTok{=}\StringTok{ }\KeywordTok{diffCoef}\NormalTok{(}\DataTypeTok{begin_num =} \StringTok{`}\DataTypeTok{Amount USD}\StringTok{`}\NormalTok{,}
+                                            \DataTypeTok{compl_num =} \StringTok{`}\DataTypeTok{now_AmountUSD}\StringTok{`}\NormalTok{,}
+                                            \DataTypeTok{limit_quant_tails =} \FloatTok{0.05}\NormalTok{)]}
+\NormalTok{won.coef <-}\StringTok{ }\NormalTok{won.coef[}\OperatorTok{!}\KeywordTok{is.na}\NormalTok{(diff_coef)]}
+\KeywordTok{head}\NormalTok{(won.coef, }\DecValTok{20}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{tabular}{l|r|r|r}
+\hline
+Opportunity\_ID & Amount USD & now\_AmountUSD & diff\_coef\\
+\hline
+0060J00000p7FWPQA2 & 400000.00 & 582415.00 & -0.4560\\
+\hline
+0060J00000p7yRbQAI & 2700000.00 & 2700000.00 & 0.0000\\
+\hline
+0060J00000p8d0nQAA & 80000.00 & 80000.00 & 0.0000\\
+\hline
+0060J00000pQffoQAC & 106000.00 & 103000.00 & 0.0283\\
+\hline
+0060J00000pUsp3QAC & 275000.00 & 89941.54 & 0.6729\\
+\hline
+0060J00000pVNY7QAO & 604550.33 & 926438.20 & -0.5324\\
+\hline
+0060J00000pW8JTQA0 & 500000.00 & 600000.00 & -0.2000\\
+\hline
+0060J00000qFmGiQAK & 1338582.68 & 285152.67 & 0.7870\\
+\hline
+0060J00000qG3TFQA0 & 737928.00 & 827928.00 & -0.1220\\
+\hline
+0060J00000qG3TPQA0 & 653824.00 & 653820.00 & 0.0000\\
+\hline
+0060J00000qG6SGQA0 & 1097657.85 & 1020033.71 & 0.0707\\
+\hline
+0060J00000qGE8AQAW & 2046109.51 & 1836346.74 & 0.1025\\
+\hline
+0060J00000qGjBxQAK & 20000.00 & 20000.00 & 0.0000\\
+\hline
+0060J00000qGjRvQAK & 300000.00 & 167928.09 & 0.4402\\
+\hline
+0060J00000qH3qfQAC & 124000.00 & 50000.00 & 0.5968\\
+\hline
+0060J00000qH6n8QAC & 20219.79 & 18789.89 & 0.0707\\
+\hline
+0060J00000qH7teQAC & 1546391.75 & 1300000.00 & 0.1593\\
+\hline
+0060J00000qHc74QAC & 25000148.00 & 16681914.61 & 0.3327\\
+\hline
+0060J00000qHgedQAC & 350000.00 & 145000.00 & 0.5857\\
+\hline
+0060J00000qHgiGQAS & 888888.89 & 882352.94 & 0.0074\\
+\hline
+\end{tabular}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{qplot}\NormalTok{(}\DataTypeTok{x =}\NormalTok{ won.coef}\OperatorTok{$}\NormalTok{diff_coef, }\DataTypeTok{geom =} \StringTok{"histogram"}\NormalTok{, }\DataTypeTok{binwidth =} \FloatTok{0.25}\NormalTok{,}
+      \DataTypeTok{main =} \StringTok{"Coefficients Distribution"}\NormalTok{, }\DataTypeTok{xlab =} \StringTok{"coeffieinct"}\NormalTok{, }\DataTypeTok{ylab =} \StringTok{"count"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{pvalDist_files/figure-latex/unnamed-chunk-36-1.pdf}
+
+~
+
+As we can see most of the values are whether decreased in time or stayed
+without changes (mode = 0, nost of the coefs are above 0)
+
+Now let's put these coefficients in a separate variable \texttt{coefs}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{coefs <-}\StringTok{ }\NormalTok{won.coef}\OperatorTok{$}\NormalTok{diff_coef}
+\end{Highlighting}
+\end{Shaded}
+
+~
+
+In order to simulate changes in the amount we would randomly apply them
+to those cases that appeared as won in simulation:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{sim_pp2 <-}\StringTok{ }\KeywordTok{pvalDist}\NormalTok{(}\DataTypeTok{pvec =}\NormalTok{ actual}\OperatorTok{$}\StringTok{`}\DataTypeTok{Probability %}\StringTok{`}\NormalTok{,}
+                   \DataTypeTok{valvec =}\NormalTok{ actual}\OperatorTok{$}\StringTok{`}\DataTypeTok{Amount USD}\StringTok{`}\NormalTok{,}
+                   \DataTypeTok{rep =} \DecValTok{10000}\NormalTok{,}
+                   \DataTypeTok{parallel =} \OtherTok{TRUE}\NormalTok{,}
+                   \DataTypeTok{coefs =}\NormalTok{ coefs)}
+
+
+\NormalTok{sim_win_prob2 <-}\StringTok{ }\KeywordTok{pvalDist}\NormalTok{(}\DataTypeTok{pvec =}\NormalTok{ ful.win.prob,}
+                         \DataTypeTok{valvec =}\NormalTok{ actual}\OperatorTok{$}\StringTok{`}\DataTypeTok{Amount USD}\StringTok{`}\NormalTok{,}
+                         \DataTypeTok{rep =} \DecValTok{10000}\NormalTok{,}
+                         \DataTypeTok{parallel =} \OtherTok{TRUE}\NormalTok{,}
+                         \DataTypeTok{coefs =}\NormalTok{ coefs)}
+
+
+\NormalTok{sim_ml_prob2 <-}\StringTok{ }\KeywordTok{pvalDist}\NormalTok{(}\DataTypeTok{pvec =}\NormalTok{ actual}\OperatorTok{$}\StringTok{`}\DataTypeTok{Predicted Probability}\StringTok{`}\NormalTok{,}
+                         \DataTypeTok{valvec =}\NormalTok{ actual}\OperatorTok{$}\StringTok{`}\DataTypeTok{Amount USD}\StringTok{`}\NormalTok{,}
+                         \DataTypeTok{rep =} \DecValTok{10000}\NormalTok{,}
+                         \DataTypeTok{parallel =} \OtherTok{TRUE}\NormalTok{,}
+                         \DataTypeTok{coefs =}\NormalTok{ coefs)}
+
+\NormalTok{err <-}\StringTok{ }\NormalTok{actual}\OperatorTok{$}\StringTok{`}\DataTypeTok{Predicted Probability}\StringTok{`} \OperatorTok{-}\StringTok{ }\NormalTok{actual}\OperatorTok{$}\NormalTok{now_IsWon}
+
+\NormalTok{sim_ml_prob3 <-}\StringTok{ }\KeywordTok{pvalDist}\NormalTok{(}\DataTypeTok{pvec =}\NormalTok{ actual}\OperatorTok{$}\StringTok{`}\DataTypeTok{Predicted Probability}\StringTok{`}\NormalTok{,}
+                         \DataTypeTok{valvec =}\NormalTok{ actual}\OperatorTok{$}\StringTok{`}\DataTypeTok{Amount USD}\StringTok{`}\NormalTok{,}
+                         \DataTypeTok{rep =} \DecValTok{100000}\NormalTok{,}
+                         \DataTypeTok{parallel =} \OtherTok{TRUE}\NormalTok{,}
+                         \DataTypeTok{coefs =}\NormalTok{ coefs,}
+                         \DataTypeTok{error =} \OtherTok{TRUE}\NormalTok{)}
+
+
+\KeywordTok{plotdist}\NormalTok{(sim_pp2)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{pvalDist_files/figure-latex/allsims-1.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{plotdist}\NormalTok{(sim_win_prob2)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{pvalDist_files/figure-latex/allsims-2.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{plotdist}\NormalTok{(sim_ml_prob2)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{pvalDist_files/figure-latex/allsims-3.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{test1 <-}\StringTok{ }\KeywordTok{data.table}\NormalTok{(}\DataTypeTok{simdist =} \KeywordTok{c}\NormalTok{(sim_pp, sim_pp2),}
+                   \DataTypeTok{coef =} \KeywordTok{c}\NormalTok{(}\KeywordTok{rep}\NormalTok{(}\OtherTok{FALSE}\NormalTok{, }\KeywordTok{length}\NormalTok{(sim_pp)),}
+                            \KeywordTok{rep}\NormalTok{(}\OtherTok{TRUE}\NormalTok{, }\KeywordTok{length}\NormalTok{(sim_pp2))),}
+                   \DataTypeTok{Prob_Type =} \StringTok{"Probability %"}\NormalTok{)}
+
+\NormalTok{test2 <-}\StringTok{ }\KeywordTok{data.table}\NormalTok{(}\DataTypeTok{simdist =} \KeywordTok{c}\NormalTok{(sim_win_prob, sim_win_prob2),}
+                   \DataTypeTok{coef =} \KeywordTok{c}\NormalTok{(}\KeywordTok{rep}\NormalTok{(}\OtherTok{FALSE}\NormalTok{, }\KeywordTok{length}\NormalTok{(sim_win_prob)),}
+                            \KeywordTok{rep}\NormalTok{(}\OtherTok{TRUE}\NormalTok{, }\KeywordTok{length}\NormalTok{(sim_win_prob2))),}
+                   \DataTypeTok{Prob_Type =} \StringTok{"Winning Probabilities"}\NormalTok{)}
+
+\NormalTok{test3 <-}\StringTok{ }\KeywordTok{data.table}\NormalTok{(}\DataTypeTok{simdist =} \KeywordTok{c}\NormalTok{(sim_ml_prob, sim_ml_prob2),}
+                   \DataTypeTok{coef =} \KeywordTok{c}\NormalTok{(}\KeywordTok{rep}\NormalTok{(}\OtherTok{FALSE}\NormalTok{, }\KeywordTok{length}\NormalTok{(sim_ml_prob)),}
+                            \KeywordTok{rep}\NormalTok{(}\OtherTok{TRUE}\NormalTok{, }\KeywordTok{length}\NormalTok{(sim_ml_prob2))),}
+                   \DataTypeTok{Prob_Type =} \StringTok{"Machine Learning"}\NormalTok{)}
+
+\NormalTok{test <-}\StringTok{ }\KeywordTok{rbind}\NormalTok{(test1,test2,test3)}
+\end{Highlighting}
+\end{Shaded}
+
+~
+
+Recall - actual value is (won opportunities) is
+\ensuremath{1.2784732\times 10^{8}}
+
+~
+
+Revenue Distributions with and without coefficient by Probability types:
+
+\includegraphics{pvalDist_files/figure-latex/plot_dens-1.pdf}
+
+~
+
+Revenue Distribution Comparison with changes coefs applied:
+
+\includegraphics{pvalDist_files/figure-latex/plot_dens_coef-1.pdf}
+
+\hypertarget{conclusion}{%
+\subsubsection{Conclusion}\label{conclusion}}
+
+Each of Revenue Distributions catches the real Revenue.\\
+However simulations upon - \texttt{Probability\ \%} \&
+\texttt{Winning\_Probability} probabilities catches it at the edge of
+distributions which tells that these probabilities are overestimated
+(too positive).
+
+On the other hand \texttt{Predicted\ Probability} which is
+\texttt{Machine\ Learning} (``hand made'') catches the actual Revenue
+near the mode (the most frequent bin) which is a very good sign of these
+probabilities are being accurate thou is the best choice to rely on for
+simulation of Revenue Distribution relative to the other available
+options.
+
+\hypertarget{forecast-on-revenue-distribution-upon-existing-open-opportunities.}{%
+\subsection{Forecast on Revenue Distribution upon existing open
+Opportunities.}\label{forecast-on-revenue-distribution-upon-existing-open-opportunities.}}
+
+\hypertarget{source-data-retrieve}{%
+\subsubsection{Source Data Retrieve:}\label{source-data-retrieve}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{source}\NormalTok{(}\StringTok{"../../R_OPPO_PROB/_oppoLastWeekly.R"}\NormalTok{, }\DataTypeTok{local =} \OtherTok{TRUE}\NormalTok{)}
+\KeywordTok{setwd}\NormalTok{(}\StringTok{"../../R_OPPO_PROB"}\NormalTok{)}
+\NormalTok{l.opps <-}\StringTok{ }\KeywordTok{oppoLastWeekly}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+filtering not-closed Opportunities
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{lst.open <-}\StringTok{ }\NormalTok{l.opps[IsClosed }\OperatorTok{==}\StringTok{ }\DecValTok{0}\NormalTok{]}
+\end{Highlighting}
+\end{Shaded}
+
+Leaving only IDs and probabilities:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{lst.probs <-}\StringTok{ }\NormalTok{lst.open[, .(}\StringTok{`}\DataTypeTok{Opportunity ID}\StringTok{`}\NormalTok{, }\StringTok{`}\DataTypeTok{Probability %}\StringTok{`}\NormalTok{, }
+\NormalTok{             Winning_Probability, }\StringTok{`}\DataTypeTok{Predicted Probability}\StringTok{`}\NormalTok{, }\StringTok{`}\DataTypeTok{Amount USD}\StringTok{`}\NormalTok{)]}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# skim(lst.probs)}
+\end{Highlighting}
+\end{Shaded}
+
+Replacing NAs in \texttt{Predicted\ Probability} \&
+\texttt{Winning\_Probability} w/\texttt{Probability\ \%}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{require}\NormalTok{(dplyr)}
+\NormalTok{lst.probs}\OperatorTok{$}\StringTok{`}\DataTypeTok{Predicted Probability}\StringTok{`}\NormalTok{ <-}\StringTok{ }
+\StringTok{    }\KeywordTok{case_when}\NormalTok{(}
+        \KeywordTok{is.na}\NormalTok{(lst.probs}\OperatorTok{$}\StringTok{`}\DataTypeTok{Predicted Probability}\StringTok{`}\NormalTok{) }\OperatorTok{~}\StringTok{ }\NormalTok{lst.probs}\OperatorTok{$}\StringTok{`}\DataTypeTok{Probability %}\StringTok{`}\NormalTok{,}
+        \OtherTok{TRUE} \OperatorTok{~}\StringTok{ }\NormalTok{lst.probs}\OperatorTok{$}\StringTok{`}\DataTypeTok{Predicted Probability}\StringTok{`}\NormalTok{)}
+
+\NormalTok{lst.probs}\OperatorTok{$}\NormalTok{Winning_Probability <-}\StringTok{ }
+\StringTok{    }\KeywordTok{case_when}\NormalTok{(}
+        \KeywordTok{is.na}\NormalTok{(lst.probs}\OperatorTok{$}\NormalTok{Winning_Probability) }\OperatorTok{~}\StringTok{ }\NormalTok{lst.probs}\OperatorTok{$}\StringTok{`}\DataTypeTok{Probability %}\StringTok{`}\NormalTok{,}
+        \OtherTok{TRUE} \OperatorTok{~}\StringTok{ }\NormalTok{lst.probs}\OperatorTok{$}\NormalTok{Winning_Probability)}
+\CommentTok{# skim(lst.probs)}
+\end{Highlighting}
+\end{Shaded}
+
+Simulating future Revenue Distribution upon open Opportunaties:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{sim_pp3 <-}\StringTok{ }\KeywordTok{pvalDist}\NormalTok{(}\DataTypeTok{pvec =}\NormalTok{ lst.probs}\OperatorTok{$}\StringTok{`}\DataTypeTok{Probability %}\StringTok{`}\NormalTok{,}
+                   \DataTypeTok{valvec =}\NormalTok{ lst.probs}\OperatorTok{$}\StringTok{`}\DataTypeTok{Amount USD}\StringTok{`}\NormalTok{,}
+                   \DataTypeTok{rep =} \DecValTok{10000}\NormalTok{,}
+                   \DataTypeTok{parallel =} \OtherTok{TRUE}\NormalTok{,}
+                   \DataTypeTok{coefs =}\NormalTok{ coefs)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## <pvalDist> parallel
+\end{verbatim}
+
+\begin{verbatim}
+## <pMinLen>: 322 zeroes & ones are removed / total 1518 p
+\end{verbatim}
+
+\begin{verbatim}
+## 0.01 minimum length for bernulli success-failure cond: 1000
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{sim_win_prob3 <-}\StringTok{ }\KeywordTok{pvalDist}\NormalTok{(}\DataTypeTok{pvec =}\NormalTok{ lst.probs}\OperatorTok{$}\NormalTok{Winning_Probability,}
+                         \DataTypeTok{valvec =}\NormalTok{ lst.probs}\OperatorTok{$}\StringTok{`}\DataTypeTok{Amount USD}\StringTok{`}\NormalTok{,}
+                         \DataTypeTok{rep =} \DecValTok{10000}\NormalTok{,}
+                         \DataTypeTok{parallel =} \OtherTok{TRUE}\NormalTok{,}
+                         \DataTypeTok{coefs =}\NormalTok{ coefs)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## <pvalDist> parallel
+\end{verbatim}
+
+\begin{verbatim}
+## <pMinLen>: 112 zeroes & ones are removed / total 1518 p
+\end{verbatim}
+
+\begin{verbatim}
+## 0.1 minimum length for bernulli success-failure cond: 101
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{sim_ml_prob3 <-}\StringTok{ }\KeywordTok{pvalDist}\NormalTok{(}\DataTypeTok{pvec =}\NormalTok{ lst.probs}\OperatorTok{$}\StringTok{`}\DataTypeTok{Predicted Probability}\StringTok{`}\NormalTok{,}
+                         \DataTypeTok{valvec =}\NormalTok{ lst.probs}\OperatorTok{$}\StringTok{`}\DataTypeTok{Amount USD}\StringTok{`}\NormalTok{,}
+                         \DataTypeTok{rep =} \DecValTok{10000}\NormalTok{,}
+                         \DataTypeTok{parallel =} \OtherTok{TRUE}\NormalTok{,}
+                         \DataTypeTok{coefs =}\NormalTok{ coefs)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## <pvalDist> parallel
+\end{verbatim}
+
+\begin{verbatim}
+## 0.0014 minimum length for bernulli success-failure cond: 7143
+\end{verbatim}
+
+Gathering simulations on different probabilities into single dataset
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{dtFromSims <-}\StringTok{ }\ControlFlowTok{function}\NormalTok{(vecs_list, names) \{}
+        \KeywordTok{require}\NormalTok{(tidyr)}
+        \KeywordTok{stopifnot}\NormalTok{(}\KeywordTok{length}\NormalTok{(vecs_list) }\OperatorTok{==}\StringTok{ }\KeywordTok{length}\NormalTok{(names))}
+        \KeywordTok{names}\NormalTok{(vecs_list) <-}\StringTok{ }\NormalTok{names}
+        \KeywordTok{return}\NormalTok{(}\KeywordTok{gather}\NormalTok{(}\KeywordTok{as.data.table}\NormalTok{(vecs_list)))}
+\NormalTok{\}}
+
+\NormalTok{f.sim <-}\StringTok{ }\KeywordTok{dtFromSims}\NormalTok{(}\KeywordTok{list}\NormalTok{(sim_pp3, sim_win_prob3, sim_ml_prob3),}
+                    \KeywordTok{c}\NormalTok{(}\StringTok{"Probability %"}\NormalTok{, }\StringTok{"Winning_Probability"}\NormalTok{,}
+                      \StringTok{"Predicted Probability"}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Loading required package: tidyr
+\end{verbatim}
+
+Ploting Future Revenue Distribution Simulation:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{densIdentPlot}\NormalTok{(f.sim, }\DataTypeTok{x =} \StringTok{"value"}\NormalTok{, }\DataTypeTok{fill =} \StringTok{"key"}\NormalTok{, }\DataTypeTok{suffix =} \StringTok{"M"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{pvalDist_files/figure-latex/unnamed-chunk-45-1.pdf}
+
+\hypertarget{distribution-comparison-for-opportunities-on-2019-04-01}{%
+\section{Distribution comparison for Opportunities on
+2019-04-01:}\label{distribution-comparison-for-opportunities-on-2019-04-01}}
+
+\begin{verbatim}
+## <pvalDist> parallel
+\end{verbatim}
+
+\begin{verbatim}
+## <pMinLen>: 194 zeroes & ones are removed / total 907 p
+\end{verbatim}
+
+\begin{verbatim}
+## 0.01 minimum length for bernulli success-failure cond: 1000
+\end{verbatim}
+
+\begin{verbatim}
+## <pvalDist> parallel
+\end{verbatim}
+
+\begin{verbatim}
+## <pMinLen>: 132 zeroes & ones are removed / total 907 p
+\end{verbatim}
+
+\begin{verbatim}
+## 0.01 minimum length for bernulli success-failure cond: 1000
+\end{verbatim}
+
+\begin{verbatim}
+## <pvalDist> parallel
+\end{verbatim}
+
+\begin{verbatim}
+## <pMinLen>: 2 zeroes & ones are removed / total 907 p
+\end{verbatim}
+
+\begin{verbatim}
+## 0.00370943534395735 minimum length for bernulli success-failure cond: 2696
+\end{verbatim}
+
+\begin{tabular}{l|l|l|l|r|l}
+\hline
+variable & type & stat & level & value & formatted\\
+\hline
+sim\_941\_m & numeric & missing & .all & 0 & 0\\
+\hline
+sim\_941\_m & numeric & complete & .all & 10000 & 10000\\
+\hline
+sim\_941\_m & numeric & n & .all & 10000 & 10000\\
+\hline
+sim\_941\_m & numeric & mean & .all & 119193961 & 1.2e+08\\
+\hline
+sim\_941\_m & numeric & sd & .all & 9702133 & 9702133.42\\
+\hline
+sim\_941\_m & numeric & p0 & .all & 90781083 & 9.1e+07\\
+\hline
+sim\_941\_m & numeric & p25 & .all & 112462507 & 1.1e+08\\
+\hline
+sim\_941\_m & numeric & p50 & .all & 118691202 & 1.2e+08\\
+\hline
+sim\_941\_m & numeric & p75 & .all & 125370796 & 1.3e+08\\
+\hline
+sim\_941\_m & numeric & p100 & .all & 166457084 & 1.7e+08\\
+\hline
+sim\_941\_m & numeric & hist & .all & NA & ▁▃▇▇▃▁▁▁\\
+\hline
+\end{tabular}
+
+\hypertarget{actual-value}{%
+\subsection{Actual Value}\label{actual-value}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{print}\NormalTok{(act.rev190401 <-}\StringTok{ }\KeywordTok{sum}\NormalTok{(d2019_}\DecValTok{04}\NormalTok{_01sl[now_IsWon }\OperatorTok{==}\StringTok{ }\DecValTok{1}\NormalTok{]}\OperatorTok{$}\NormalTok{now_AmountUSD))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 118407350
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# skim(d2019_04_01sl) %>% pander()}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{plot-2019-04-01-distributions.}{%
+\subsection{Plot 2019-04-01
+distributions.}\label{plot-2019-04-01-distributions.}}
+
+\includegraphics{pvalDist_files/figure-latex/unnamed-chunk-48-1.pdf}
+
+\hypertarget{simulating-finlob-only-from-2019-04-01}{%
+\section{SIMULATING FINLOB ONLY FROM
+2019-04-01}\label{simulating-finlob-only-from-2019-04-01}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{d190401_finlob <-}\StringTok{ }\NormalTok{d2019_}\DecValTok{04}\NormalTok{_}\DecValTok{01}\NormalTok{[}\StringTok{`}\DataTypeTok{Opportunity LOB}\StringTok{`} \OperatorTok{==}\StringTok{ "FIN LOB"}\NormalTok{]}
+\NormalTok{d190401_finlob <-}\StringTok{ }\NormalTok{d190401_finlob[, }\KeywordTok{c}\NormalTok{(}\StringTok{"Opportunity_ID"}\NormalTok{,}
+                                     \StringTok{"Probability %"}\NormalTok{,}
+                                     \StringTok{"Winning_Probability"}\NormalTok{,}
+                                     \StringTok{"Probability_Of_Success"}\NormalTok{,}
+                                     \StringTok{"Predicted Probability"}\NormalTok{,}
+                                     \StringTok{"now_IsWon"}\NormalTok{,}
+                                     \StringTok{"Amount USD"}\NormalTok{,}
+                                     \StringTok{"now_AmountUSD"}\NormalTok{)]}
+
+\KeywordTok{print}\NormalTok{(act.revfinlob190401 <-}\StringTok{ }\KeywordTok{sum}\NormalTok{(d190401_finlob[now_IsWon }\OperatorTok{==}\StringTok{ }\DecValTok{1}\NormalTok{]}\OperatorTok{$}\NormalTok{now_AmountUSD))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 44704174
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{sim_}\DecValTok{941}\NormalTok{_finlob_p <-}\StringTok{ }\KeywordTok{pvalDist}\NormalTok{(}\DataTypeTok{pvec =}\NormalTok{ d190401_finlob}\OperatorTok{$}\StringTok{`}\DataTypeTok{Probability %}\StringTok{`}\NormalTok{,}
+                      \DataTypeTok{valvec =}\NormalTok{ d190401_finlob}\OperatorTok{$}\StringTok{`}\DataTypeTok{Amount USD}\StringTok{`}\NormalTok{,}
+                      \DataTypeTok{rep =} \DecValTok{10000}\NormalTok{,}
+                      \DataTypeTok{coefs =}\NormalTok{ coefs,}
+                      \DataTypeTok{parallel =} \OtherTok{TRUE}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## <pvalDist> parallel
+\end{verbatim}
+
+\begin{verbatim}
+## <pMinLen>: 148 zeroes & ones are removed / total 454 p
+\end{verbatim}
+
+\begin{verbatim}
+## 0.01 minimum length for bernulli success-failure cond: 1000
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{sim_}\DecValTok{941}\NormalTok{_finlob_w <-}\StringTok{ }\KeywordTok{pvalDist}\NormalTok{(}\DataTypeTok{pvec =}\NormalTok{ d190401_finlob}\OperatorTok{$}\NormalTok{Winning_Probability,}
+                      \DataTypeTok{valvec =}\NormalTok{ d190401_finlob}\OperatorTok{$}\StringTok{`}\DataTypeTok{Amount USD}\StringTok{`}\NormalTok{,}
+                      \DataTypeTok{rep =} \DecValTok{10000}\NormalTok{,}
+                      \DataTypeTok{coefs =}\NormalTok{ coefs,}
+                      \DataTypeTok{parallel =} \OtherTok{TRUE}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## <pvalDist> parallel
+\end{verbatim}
+
+\begin{verbatim}
+## <pMinLen>: 100 zeroes & ones are removed / total 454 p
+\end{verbatim}
+
+\begin{verbatim}
+## 0.01 minimum length for bernulli success-failure cond: 1000
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{sim_}\DecValTok{941}\NormalTok{_finlob_m <-}\StringTok{ }\KeywordTok{pvalDist}\NormalTok{(}\DataTypeTok{pvec =}\NormalTok{ d190401_finlob}\OperatorTok{$}\StringTok{`}\DataTypeTok{Predicted Probability}\StringTok{`}\NormalTok{,}
+                      \DataTypeTok{valvec =}\NormalTok{ d190401_finlob}\OperatorTok{$}\StringTok{`}\DataTypeTok{Amount USD}\StringTok{`}\NormalTok{,}
+                      \DataTypeTok{rep =} \DecValTok{10000}\NormalTok{,}
+                      \DataTypeTok{coefs =}\NormalTok{ coefs,}
+                      \DataTypeTok{parallel =} \OtherTok{TRUE}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## <pvalDist> parallel
+\end{verbatim}
+
+\begin{verbatim}
+## <pMinLen>: 2 zeroes & ones are removed / total 454 p
+\end{verbatim}
+
+\begin{verbatim}
+## 0.00380393919010723 minimum length for bernulli success-failure cond: 2629
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{f_sim190401_finlob <-}\StringTok{ }\KeywordTok{dtFromSims}\NormalTok{(}\KeywordTok{list}\NormalTok{(sim_}\DecValTok{941}\NormalTok{_finlob_p,}
+\NormalTok{                                      sim_}\DecValTok{941}\NormalTok{_finlob_w,}
+\NormalTok{                                      sim_}\DecValTok{941}\NormalTok{_finlob_m),}
+                    \KeywordTok{c}\NormalTok{(}\StringTok{"Probability %"}\NormalTok{, }\StringTok{"Winning_Probability"}\NormalTok{,}
+                      \StringTok{"Predicted Probability"}\NormalTok{))}
+
+\KeywordTok{densIdentPlot}\NormalTok{(f_sim190401_finlob, }\DataTypeTok{x =} \StringTok{"value"}\NormalTok{, }\DataTypeTok{fill =} \StringTok{"key"}\NormalTok{, }\DataTypeTok{suffix =} \StringTok{"M"}\NormalTok{) }\OperatorTok{+}
+\StringTok{    }\KeywordTok{geom_text}\NormalTok{(}\KeywordTok{aes}\NormalTok{(}\DataTypeTok{x =}\NormalTok{ act.revfinlob190401, }\DataTypeTok{y =} \DecValTok{0}\NormalTok{),}
+    \DataTypeTok{label =} \StringTok{"Actual Revenue"}\NormalTok{,}
+    \DataTypeTok{color =} \StringTok{"black"}\NormalTok{,}
+    \DataTypeTok{size =} \DecValTok{4}\NormalTok{,}
+    \DataTypeTok{angle =} \DecValTok{90}\NormalTok{,}
+    \DataTypeTok{vjust =} \FloatTok{1.5}\NormalTok{,}
+    \DataTypeTok{hjust =} \FloatTok{-0.5}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_vline}\NormalTok{(}\DataTypeTok{xintercept =}\NormalTok{ act.revfinlob190401, }\DataTypeTok{linetype =} \StringTok{"solid"}\NormalTok{, }\DataTypeTok{size =} \DecValTok{1}\NormalTok{, }\DataTypeTok{color =} \StringTok{"black"}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{labs}\NormalTok{(}\DataTypeTok{caption =} \KeywordTok{paste0}\NormalTok{(}\StringTok{"Actual Revenue: "}\NormalTok{, }\KeywordTok{dollar}\NormalTok{(}\KeywordTok{round}\NormalTok{(act.revfinlob190401))))}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{pvalDist_files/figure-latex/finlob_sim_941-1.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# names(d2019_04_01)}
+\CommentTok{# d190401_finlob}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{simulating-particular-client.-say-daimler.}{%
+\section{Simulating particular client. Say
+Daimler.}\label{simulating-particular-client.-say-daimler.}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{daimler}\FloatTok{.190401}\NormalTok{ <-}\StringTok{ }\NormalTok{d2019_}\DecValTok{04}\NormalTok{_}\DecValTok{01}\NormalTok{[}\StringTok{`}\DataTypeTok{Account Name}\StringTok{`} \OperatorTok{==}\StringTok{ "Daimler"}\NormalTok{]}
+
+\NormalTok{daimler}\FloatTok{.190401}\NormalTok{ <-}\StringTok{ }\NormalTok{daimler}\FloatTok{.190401}\NormalTok{[, }\KeywordTok{c}\NormalTok{(}\StringTok{"Opportunity_ID"}\NormalTok{,}
+                                     \StringTok{"Probability %"}\NormalTok{,}
+                                     \StringTok{"Winning_Probability"}\NormalTok{,}
+                                     \StringTok{"Probability_Of_Success"}\NormalTok{,}
+                                     \StringTok{"Predicted Probability"}\NormalTok{,}
+                                     \StringTok{"now_IsWon"}\NormalTok{,}
+                                     \StringTok{"Amount USD"}\NormalTok{,}
+                                     \StringTok{"now_AmountUSD"}\NormalTok{)]}
+
+\KeywordTok{print}\NormalTok{(actrev_daimler}\FloatTok{.190401}\NormalTok{ <-}\StringTok{ }\KeywordTok{sum}\NormalTok{(daimler}\FloatTok{.190401}\NormalTok{[now_IsWon }\OperatorTok{==}\StringTok{ }\DecValTok{1}\NormalTok{]}\OperatorTok{$}\NormalTok{now_AmountUSD))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 2099575
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{sim_}\DecValTok{941}\NormalTok{_daimler_p <-}\StringTok{ }\KeywordTok{pvalDist}\NormalTok{(}\DataTypeTok{pvec =}\NormalTok{ daimler}\FloatTok{.190401}\OperatorTok{$}\StringTok{`}\DataTypeTok{Probability %}\StringTok{`}\NormalTok{,}
+                      \DataTypeTok{valvec =}\NormalTok{ daimler}\FloatTok{.190401}\OperatorTok{$}\StringTok{`}\DataTypeTok{Amount USD}\StringTok{`}\NormalTok{,}
+                      \DataTypeTok{rep =} \DecValTok{10000}\NormalTok{,}
+                      \DataTypeTok{coefs =}\NormalTok{ coefs,}
+                      \DataTypeTok{parallel =} \OtherTok{TRUE}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## <pvalDist> parallel
+\end{verbatim}
+
+\begin{verbatim}
+## 0.01 minimum length for bernulli success-failure cond: 1000
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{sim_}\DecValTok{941}\NormalTok{_daimler_w <-}\StringTok{ }\KeywordTok{pvalDist}\NormalTok{(}\DataTypeTok{pvec =}\NormalTok{ daimler}\FloatTok{.190401}\OperatorTok{$}\NormalTok{Winning_Probability,}
+                      \DataTypeTok{valvec =}\NormalTok{ daimler}\FloatTok{.190401}\OperatorTok{$}\StringTok{`}\DataTypeTok{Amount USD}\StringTok{`}\NormalTok{,}
+                      \DataTypeTok{rep =} \DecValTok{10000}\NormalTok{,}
+                      \DataTypeTok{coefs =}\NormalTok{ coefs,}
+                      \DataTypeTok{parallel =} \OtherTok{TRUE}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## <pvalDist> parallel
+\end{verbatim}
+
+\begin{verbatim}
+## <pMinLen>: 1 zeroes & ones are removed / total 12 p
+\end{verbatim}
+
+\begin{verbatim}
+## 0.1 minimum length for bernulli success-failure cond: 101
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{sim_}\DecValTok{941}\NormalTok{_daimler_m <-}\StringTok{ }\KeywordTok{pvalDist}\NormalTok{(}\DataTypeTok{pvec =}\NormalTok{ daimler}\FloatTok{.190401}\OperatorTok{$}\StringTok{`}\DataTypeTok{Predicted Probability}\StringTok{`}\NormalTok{,}
+                      \DataTypeTok{valvec =}\NormalTok{ daimler}\FloatTok{.190401}\OperatorTok{$}\StringTok{`}\DataTypeTok{Amount USD}\StringTok{`}\NormalTok{,}
+                      \DataTypeTok{rep =} \DecValTok{10000}\NormalTok{,}
+                      \DataTypeTok{coefs =}\NormalTok{ coefs,}
+                      \DataTypeTok{parallel =} \OtherTok{TRUE}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## <pvalDist> parallel
+\end{verbatim}
+
+\begin{verbatim}
+## 0.0207382723993602 minimum length for bernulli success-failure cond: 483
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{f_sim190401_daimler <-}\StringTok{ }\KeywordTok{dtFromSims}\NormalTok{(}\KeywordTok{list}\NormalTok{(sim_}\DecValTok{941}\NormalTok{_daimler_p,}
+\NormalTok{                                      sim_}\DecValTok{941}\NormalTok{_daimler_w,}
+\NormalTok{                                      sim_}\DecValTok{941}\NormalTok{_daimler_m),}
+                    \KeywordTok{c}\NormalTok{(}\StringTok{"Probability %"}\NormalTok{, }\StringTok{"Winning_Probability"}\NormalTok{,}
+                      \StringTok{"Predicted Probability"}\NormalTok{))}
+
+\KeywordTok{densIdentPlot}\NormalTok{(f_sim190401_daimler, }\DataTypeTok{x =} \StringTok{"value"}\NormalTok{, }\DataTypeTok{fill =} \StringTok{"key"}\NormalTok{, }\DataTypeTok{suffix =} \StringTok{"M"}\NormalTok{) }\OperatorTok{+}
+\StringTok{    }\KeywordTok{geom_text}\NormalTok{(}\KeywordTok{aes}\NormalTok{(}\DataTypeTok{x =}\NormalTok{ actrev_daimler}\FloatTok{.190401}\NormalTok{, }\DataTypeTok{y =} \DecValTok{0}\NormalTok{),}
+    \DataTypeTok{label =} \StringTok{"Actual Revenue"}\NormalTok{,}
+    \DataTypeTok{color =} \StringTok{"black"}\NormalTok{,}
+    \DataTypeTok{size =} \DecValTok{4}\NormalTok{,}
+    \DataTypeTok{angle =} \DecValTok{90}\NormalTok{,}
+    \DataTypeTok{vjust =} \FloatTok{1.5}\NormalTok{,}
+    \DataTypeTok{hjust =} \FloatTok{-0.5}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_vline}\NormalTok{(}\DataTypeTok{xintercept =}\NormalTok{ actrev_daimler}\FloatTok{.190401}\NormalTok{, }\DataTypeTok{linetype =} \StringTok{"solid"}\NormalTok{, }\DataTypeTok{size =} \DecValTok{1}\NormalTok{, }\DataTypeTok{color =} \StringTok{"black"}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{labs}\NormalTok{(}\DataTypeTok{caption =} \KeywordTok{paste0}\NormalTok{(}\StringTok{"Actual Revenue: "}\NormalTok{, }\KeywordTok{dollar}\NormalTok{(}\KeywordTok{round}\NormalTok{(actrev_daimler}\FloatTok{.190401}\NormalTok{))))}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{pvalDist_files/figure-latex/sim_daimler-1.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# names(d2019_04_01)}
+\CommentTok{# d190401_finlob}
+
+\CommentTok{# sort(unique(d2019_04_01$`Account Name`))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{source}\NormalTok{(}\StringTok{"../../R_OPPO_PROB/_oppoProb.R"}\NormalTok{)}
+\KeywordTok{setwd}\NormalTok{(}\StringTok{"../../R_OPPO_PROB"}\NormalTok{)}
+\NormalTok{ml_}\DecValTok{941}\NormalTok{ <-}\StringTok{ }\KeywordTok{oppoProb}\NormalTok{(}\DataTypeTok{given_date =} \StringTok{"2019-04-01"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## <oppoProb> Execute
+\end{verbatim}
+
+\begin{verbatim}
+## <wkAgg> Feature Engineering
+\end{verbatim}
+
+\begin{verbatim}
+## <wkAgg> excluding observation above 2019-04-01
+\end{verbatim}
+
+\begin{verbatim}
+## <wkAgg> 8708 OpIDs removed as all stages cyrillic
+\end{verbatim}
+
+\begin{verbatim}
+## <compTrainData> Opportunity Probabilities as for 2019-04-01
+\end{verbatim}
+
+\begin{verbatim}
+## <compTrainData> 0 removed due to upper limit date
+\end{verbatim}
+
+\begin{verbatim}
+## <compTrainData> 13014 rows removed due to bottom limit date
+\end{verbatim}
+
+\begin{verbatim}
+## <compTrainData> 0 rows removed as rm.badstart
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{d2019_}\DecValTok{04}\NormalTok{_01sl[, }\StringTok{`}\DataTypeTok{Predicted Probability}\StringTok{`} \OperatorTok{:}\ErrorTok{=}\StringTok{ }\OtherTok{NULL}\NormalTok{]}
+\NormalTok{lj_941c <-}\StringTok{ }\KeywordTok{setDT}\NormalTok{(}\KeywordTok{left_join}\NormalTok{(d2019_}\DecValTok{04}\NormalTok{_01sl, ml_}\DecValTok{941}\NormalTok{[, }\KeywordTok{c}\NormalTok{(}\StringTok{"Opportunity_ID"}\NormalTok{, }\StringTok{"Probability"}\NormalTok{)], }\DataTypeTok{by =} \KeywordTok{c}\NormalTok{(}\StringTok{"Opportunity_ID"}\NormalTok{ =}\StringTok{ "Opportunity_ID"}\NormalTok{)))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Warning: Column `Opportunity_ID` joining character vector and factor,
+## coercing into character vector
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{lj_}\DecValTok{941}\NormalTok{ <-}\StringTok{ }\KeywordTok{copy}\NormalTok{(lj_941c)}
+
+\NormalTok{lj_}\DecValTok{941}\OperatorTok{$}\NormalTok{Probability <-}\StringTok{ }\KeywordTok{case_when}\NormalTok{(}\KeywordTok{is.na}\NormalTok{(lj_}\DecValTok{941}\OperatorTok{$}\NormalTok{Probability) }\OperatorTok{~}\StringTok{ }\NormalTok{lj_}\DecValTok{941}\OperatorTok{$}\StringTok{`}\DataTypeTok{Probability %}\StringTok{`}\NormalTok{,}
+                                \OtherTok{TRUE} \OperatorTok{~}\StringTok{ }\NormalTok{lj_}\DecValTok{941}\OperatorTok{$}\NormalTok{Probability)}
+
+\NormalTok{sim_}\DecValTok{941}\NormalTok{_m2 <-}\StringTok{ }\KeywordTok{pvalDist}\NormalTok{(}\DataTypeTok{pvec =}\NormalTok{ lj_}\DecValTok{941}\OperatorTok{$}\NormalTok{Probability,}
+                       \DataTypeTok{valvec =}\NormalTok{ lj_}\DecValTok{941}\OperatorTok{$}\StringTok{`}\DataTypeTok{Amount USD}\StringTok{`}\NormalTok{,}
+                       \DataTypeTok{rep =} \DecValTok{10000}\NormalTok{,}
+                       \DataTypeTok{coefs =}\NormalTok{ coefs,}
+                       \DataTypeTok{parallel =} \OtherTok{TRUE}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## <pvalDist> parallel
+\end{verbatim}
+
+\begin{verbatim}
+## <pMinLen>: 2 zeroes & ones are removed / total 907 p
+\end{verbatim}
+
+\begin{verbatim}
+## 0.00232899265890697 minimum length for bernulli success-failure cond: 4294
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{skim}\NormalTok{(sim_}\DecValTok{941}\NormalTok{_m2)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{tabular}{l|l|l|l|r|l}
+\hline
+variable & type & stat & level & value & formatted\\
+\hline
+sim\_941\_m2 & numeric & missing & .all & 0 & 0\\
+\hline
+sim\_941\_m2 & numeric & complete & .all & 10000 & 10000\\
+\hline
+sim\_941\_m2 & numeric & n & .all & 10000 & 10000\\
+\hline
+sim\_941\_m2 & numeric & mean & .all & 110872700 & 1.1e+08\\
+\hline
+sim\_941\_m2 & numeric & sd & .all & 9235518 & 9235517.93\\
+\hline
+sim\_941\_m2 & numeric & p0 & .all & 82595036 & 8.3e+07\\
+\hline
+sim\_941\_m2 & numeric & p25 & .all & 104486926 & 1e+08\\
+\hline
+sim\_941\_m2 & numeric & p50 & .all & 110265141 & 1.1e+08\\
+\hline
+sim\_941\_m2 & numeric & p75 & .all & 116681528 & 1.2e+08\\
+\hline
+sim\_941\_m2 & numeric & p100 & .all & 154444878 & 1.5e+08\\
+\hline
+sim\_941\_m2 & numeric & hist & .all & NA & ▁▂▇▇▃▁▁▁\\
+\hline
+\end{tabular}
+
+\hypertarget{residuals.}{%
+\section{Residuals.}\label{residuals.}}
+
+Since probability is the estimation. We need to simualte error variance.
+We'll take the difference between probability \& actual outcome to have
+a thougth on the error estimation.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# glimpse(data20181001)}
+\NormalTok{d <-}\StringTok{ }\KeywordTok{copy}\NormalTok{(data20181001)}
+\NormalTok{pp.res <-}\StringTok{ }\NormalTok{d}\OperatorTok{$}\StringTok{`}\DataTypeTok{Predicted Probability}\StringTok{`} \OperatorTok{-}\StringTok{ }\NormalTok{d}\OperatorTok{$}\NormalTok{now_IsWon}
+\NormalTok{sf.res <-}\StringTok{ }\NormalTok{d}\OperatorTok{$}\StringTok{`}\DataTypeTok{Probability %}\StringTok{`} \OperatorTok{-}\StringTok{ }\NormalTok{d}\OperatorTok{$}\NormalTok{now_IsWon}
+\NormalTok{wp.res <-}\StringTok{ }\NormalTok{d}\OperatorTok{$}\NormalTok{Winning_Probability }\OperatorTok{-}\StringTok{ }\NormalTok{d}\OperatorTok{$}\NormalTok{now_IsWon}
+\KeywordTok{skim}\NormalTok{(}\KeywordTok{as.data.table}\NormalTok{(}\KeywordTok{cbind}\NormalTok{(pp.res, sf.res, wp.res)))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{tabular}{l|l|l|l|r|l}
+\hline
+variable & type & stat & level & value & formatted\\
+\hline
+pp.res & numeric & missing & .all & 0.0000000 & 0\\
+\hline
+pp.res & numeric & complete & .all & 988.0000000 & 988\\
+\hline
+pp.res & numeric & n & .all & 988.0000000 & 988\\
+\hline
+pp.res & numeric & mean & .all & 0.0078439 & 0.0078\\
+\hline
+pp.res & numeric & sd & .all & 0.2991341 & 0.3\\
+\hline
+pp.res & numeric & p0 & .all & -0.9865802 & -0.99\\
+\hline
+pp.res & numeric & p25 & .all & -0.0085731 & -0.0086\\
+\hline
+pp.res & numeric & p50 & .all & 0.0256828 & 0.026\\
+\hline
+pp.res & numeric & p75 & .all & 0.0881271 & 0.088\\
+\hline
+pp.res & numeric & p100 & .all & 0.9786081 & 0.98\\
+\hline
+pp.res & numeric & hist & .all & NA & ▁▁▁▂▇▁▁▁\\
+\hline
+sf.res & numeric & missing & .all & 0.0000000 & 0\\
+\hline
+sf.res & numeric & complete & .all & 988.0000000 & 988\\
+\hline
+sf.res & numeric & n & .all & 988.0000000 & 988\\
+\hline
+sf.res & numeric & mean & .all & 0.0145142 & 0.015\\
+\hline
+sf.res & numeric & sd & .all & 0.3631165 & 0.36\\
+\hline
+sf.res & numeric & p0 & .all & -1.0000000 & -1\\
+\hline
+sf.res & numeric & p25 & .all & -0.0325000 & -0.032\\
+\hline
+sf.res & numeric & p50 & .all & 0.0000000 & 0\\
+\hline
+sf.res & numeric & p75 & .all & 0.2500000 & 0.25\\
+\hline
+sf.res & numeric & p100 & .all & 0.9000000 & 0.9\\
+\hline
+sf.res & numeric & hist & .all & NA & ▁▁▁▂▇▂▂▁\\
+\hline
+wp.res & numeric & missing & .all & 0.0000000 & 0\\
+\hline
+wp.res & numeric & complete & .all & 988.0000000 & 988\\
+\hline
+wp.res & numeric & n & .all & 988.0000000 & 988\\
+\hline
+wp.res & numeric & mean & .all & 0.0466599 & 0.047\\
+\hline
+wp.res & numeric & sd & .all & 0.3657361 & 0.37\\
+\hline
+wp.res & numeric & p0 & .all & -1.0000000 & -1\\
+\hline
+wp.res & numeric & p25 & .all & 0.0000000 & 0\\
+\hline
+wp.res & numeric & p50 & .all & 0.1000000 & 0.1\\
+\hline
+wp.res & numeric & p75 & .all & 0.2500000 & 0.25\\
+\hline
+wp.res & numeric & p100 & .all & 1.0000000 & 1\\
+\hline
+wp.res & numeric & hist & .all & NA & ▁▂▁▇▇▅▁▁\\
+\hline
+\end{tabular}
+
+Random apply this error coefficient to probabilities.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{applyErr <-}\StringTok{ }\ControlFlowTok{function}\NormalTok{(p, err) \{}
+  
+        \KeywordTok{require}\NormalTok{(dplyr)}
+        \KeywordTok{stopifnot}\NormalTok{(}\KeywordTok{length}\NormalTok{(p) }\OperatorTok{==}\StringTok{ }\NormalTok{1L)}
+\NormalTok{        xp <-}\StringTok{ }\NormalTok{p }\OperatorTok{+}\StringTok{ }\NormalTok{(p }\OperatorTok{*}\StringTok{ }\KeywordTok{sample}\NormalTok{(err, }\DataTypeTok{size =} \KeywordTok{length}\NormalTok{(p), }\DataTypeTok{replace =} \OtherTok{TRUE}\NormalTok{))}
+\NormalTok{        xp <-}\StringTok{ }\KeywordTok{case_when}\NormalTok{(xp }\OperatorTok{<}\StringTok{ }\NormalTok{0L }\OperatorTok{~}\StringTok{ }\DecValTok{0}\NormalTok{,}
+\NormalTok{                        xp }\OperatorTok{>}\StringTok{ }\NormalTok{1L }\OperatorTok{~}\StringTok{ }\DecValTok{1}\NormalTok{,}
+                        \OtherTok{TRUE} \OperatorTok{~}\StringTok{ }\NormalTok{xp)}
+        \KeywordTok{return}\NormalTok{(xp)}
+  
+\NormalTok{\}}
+
+\NormalTok{sim_err_pp <-}\StringTok{ }\KeywordTok{pvalDist}\NormalTok{(}\DataTypeTok{pvec     =}\NormalTok{ lj_}\DecValTok{941}\OperatorTok{$}\NormalTok{Probability,}
+                       \DataTypeTok{valvec   =}\NormalTok{ lj_}\DecValTok{941}\OperatorTok{$}\StringTok{`}\DataTypeTok{Amount USD}\StringTok{`}\NormalTok{,}
+                       \DataTypeTok{rep      =} \DecValTok{10000}\NormalTok{,}
+                       \DataTypeTok{coefs    =}\NormalTok{ coefs,}
+                       \DataTypeTok{parallel =} \OtherTok{TRUE}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## <pvalDist> parallel
+\end{verbatim}
+
+\begin{verbatim}
+## <pMinLen>: 2 zeroes & ones are removed / total 907 p
+\end{verbatim}
+
+\begin{verbatim}
+## 0.00232899265890697 minimum length for bernulli success-failure cond: 4294
+\end{verbatim}
+
+
+\end{document}

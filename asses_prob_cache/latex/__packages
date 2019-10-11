@@ -1,0 +1,12 @@
+base
+data.table
+stringr
+RODBC
+dplyr
+lubridate
+zoo
+forcats
+xts
+TTR
+quantmod
+tidyr
